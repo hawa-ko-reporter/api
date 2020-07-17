@@ -65,3 +65,17 @@ class UserSubscription(models.Model):
     is_archived = models.BooleanField(default=False)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.subscription_user.full_name
+
+
+class Program(models.Model):
+    name = models.CharField(max_length=200)
+    content_url = models.URLField()
+    reveal_day = models.IntegerField()
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
