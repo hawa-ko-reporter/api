@@ -6,3 +6,4 @@ env
 staticfiles
 
 ./.idea
+.env
