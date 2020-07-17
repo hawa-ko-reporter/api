@@ -1,0 +1,11 @@
+[
+  {
+    "model": "subscriptions.SubscriptionType",
+    "pk": 1,
+    "fields": {
+      "name": "Air Quality Station",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  }
+]
