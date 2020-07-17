@@ -1,21 +1,22 @@
-# Handling Periodic Tasks in Django with Celery and Docker
+# Hawa-ko-reporter 
 
-Example of how to manage periodic tasks with Django, Celery, and Docker
-
-## Want to learn how to build this?
-
-Check out the [post](https://testdriven.io/blog/django-celery-periodic-tasks/).
-
-## Want to use this project?
-
-Spin up the containers:
-
-```sh
-$ docker-compose up -d --build
+## Setting up development environment 
+```bash 
+docker-compose up -d --build
+```
+```bash
+ sudo docker-compose exec web python manage.py migrate
 ```
 
-Open the logs associated with the `celery` service to see the tasks running periodically:
-
-```sh
-$ docker-compose logs -f 'celery'
+Once the build is complete, navigate to http://localhost:1337 to ensure the app works as expected. You should see the following text:
+```json
+{"message": "Welcome to Hawa-ko-reporter API!"}
 ```
+
+## Viewing logs
+ ```bash
+ docker-compose logs 'web'
+ docker-compose logs 'celery'
+ docker-compose logs 'celery-beat'
+ docker-compose logs 'redis'
+> ```
