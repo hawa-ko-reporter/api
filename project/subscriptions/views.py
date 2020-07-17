@@ -11,11 +11,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from project.subscriptions.helpers.consts import messages
-from project.subscriptions.helpers.air_quality_fetcher import AirQualityInfo
-from project.subscriptions.helpers.facebook_api import get_name, handle_fb_name_response
+from .helpers.consts import messages
+from .helpers.air_quality_fetcher import AirQualityInfo
+from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription
-from project.subscriptions.helpers.geo import distance
+from .helpers.geo import distance
 
 
 # Create your views here.
