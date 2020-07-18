@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .helpers.consts import messages
 from .helpers.air_quality_fetcher import getNearestAQI
+from .helpers.dialog_flow_response import get_aqi_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription
 from .helpers.geo import distance
@@ -91,6 +92,7 @@ class AirQualityIndexAPI(APIView):
     def get(self, request):
         return Response(data="return msg or data")
 
+
     def prepareMessage(self, data):
         message = "The nearest station is {}".format(data['station']['name'])
         message += " \n "
@@ -115,21 +117,22 @@ class AirQualityIndexAPI(APIView):
         aqi['query'] = address
         aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
-        message = {
-            'fulfillmentText': [
-                self.prepareMessage(aqi),
-            ],
-            "outputContexts": [
-                {
-                    "name": "{}/contexts/data-upsell-yes".format(data['session']),
-                    "lifespanCount": 5,
-                    "parameters": {
-                        "aqi": float(aqi['aqi']),
-                    }
-                }
-            ]
-        }
-        return message
+        return get_aqi_response_message(aqi)
+        # message = {
+        #     'fulfillmentText': [
+        #         self.prepareMessage(aqi),
+        #     ],
+        #     "outputContexts": [
+        #         {
+        #             "name": "{}/contexts/data-upsell-yes".format(data['session']),
+        #             "lifespanCount": 5,
+        #             "parameters": {
+        #                 "aqi": float(aqi['aqi']),
+        #             }
+        #         }
+        #     ]
+        # }
+        # return message
 
     def handleUnsubscribe(self, data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
