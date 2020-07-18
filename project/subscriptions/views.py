@@ -117,7 +117,7 @@ class AirQualityIndexAPI(APIView):
         aqi['query'] = address
         aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
-        return get_aqi_response_message(aqi)
+        return get_aqi_response_message(aqi,data)
         # message = {
         #     'fulfillmentText': [
         #         self.prepareMessage(aqi),

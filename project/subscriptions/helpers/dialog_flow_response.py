@@ -7,8 +7,8 @@ def prepare_aqi_message(data):
     return messages
 
 
-def add_output_context(response):
-    "outputContexts": [
+def add_output_context(dialogflow_reply, data, aqi):
+    dialogflow_reply["outputContexts"] = [
         {
             "name": "{}/contexts/data-upsell-yes".format(data['session']),
             "lifespanCount": 5,
@@ -17,10 +17,14 @@ def add_output_context(response):
             }
         }
     ]
+    return dialogflow_reply
 
-def get_aqi_response_message(data):
-    messages = prepare_aqi_message(data)
-    return multiline_message(message_list=messages)
+
+def get_aqi_response_message(aqi, data):
+    messages = prepare_aqi_message(aqi)
+    reply = multiline_message(message_list=messages)
+    reply = add_output_context(reply, data=data, aqi=aqi)
+    return reply
 
 
 def multiline_message(message_list):
