@@ -20,11 +20,29 @@ def add_output_context(dialogflow_reply, data, aqi):
     return dialogflow_reply
 
 
+def get_list_subs_response_message(subscriptions):
+    messages = prepare_subscriptions_message(subscriptions)
+    reply = multiline_message(message_list=messages)
+    return reply
+
+
+def prepare_subscriptions_message(subscriptions):
+    messages = ["You are subscribed to {} stations".format(len(subscriptions))]
+    for row in subscriptions:
+        messages.append(row.subscription.name)
+    messages.append("Do you want to un-subscribe?")
+    return messages
+
+
 def get_aqi_response_message(aqi, data):
     messages = prepare_aqi_message(aqi)
     reply = multiline_message(message_list=messages)
     reply = add_output_context(reply, data=data, aqi=aqi)
     return reply
+
+
+def single_line_message(message):
+    return {'fulfillmentText': message}
 
 
 def multiline_message(message_list):

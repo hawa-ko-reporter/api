@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .helpers.consts import messages
 from .helpers.air_quality_fetcher import getNearestAQI
-from .helpers.dialog_flow_response import get_aqi_response_message
+from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription
 from .helpers.geo import distance
@@ -39,26 +39,6 @@ class AirQualityIndexAPI(APIView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.messages = messages
-
-    @staticmethod
-    def dialogflow_message(message):
-        return {'fulfillmentText': message}
-
-    @staticmethod
-    def dialogflow_message_list():
-        return {
-            "fulfillmentMessages": [
-                {
-                    "text": {
-                        "text": [
-                            "Text response from webhook",
-                            "Nishon",
-                        ]
-                    },
-
-                }
-            ]
-        }
 
     def getAQIMessage(self, aqi):
         if aqi <= 50:
@@ -118,34 +98,27 @@ class AirQualityIndexAPI(APIView):
 
         return get_aqi_response_message(aqi, data)
 
-    def handleUnsubscribe(self, data):
+    @staticmethod
+    def handleUnsubscribe(data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
         platform = data['originalDetectIntentRequest']["source"]
         user = User.objects.get(platform=platform, platform_id=platform_id)
         UserSubscription.objects.select_related().filter(subscription_user=user,
                                                          is_archived=False).update(is_archived=True)
-        self.fullfillment_message = "You have been unsubscribed"
-        return self.dialogflow_message(message=self.fullfillment_message)
 
-    def handleListSubscriptions(self, data):
+        return single_line_message(message="You have been unsubscribed")
+
+    @staticmethod
+    def handleListSubscriptions(data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
         platform = data['originalDetectIntentRequest']["source"]
         user = User.objects.get(platform=platform, platform_id=platform_id)
         subscriptions = UserSubscription.objects.select_related().filter(subscription_user=user, is_archived=False)
 
         if subscriptions:
-            self.fullfillment_message = "You are subscribed to {} stations".format(len(subscriptions))
-            for row in subscriptions:
-                self.fullfillment_message += "\n"
-                self.fullfillment_message += "\n"
-                self.fullfillment_message += row.subscription.name
+            return get_list_subs_response_message(subscriptions=subscriptions)
 
-            self.fullfillment_message += "\n"
-            self.fullfillment_message += "\n"
-            self.fullfillment_message += "Do you want to un-subscribe?"
-        else:
-            self.fullfillment_message = "You do not have any subscriptions"
-        return self.dialogflow_message(message=self.fullfillment_message)
+        return single_line_message(message="You do not have any subscriptions")
 
     def handleSubscribeRequest(self, data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
@@ -182,14 +155,14 @@ class AirQualityIndexAPI(APIView):
             subscription_location_latitude=user_lat,
             subscription_location_longitude=user_lon,
         )
-        return self.dialogflow_message("You will now receive daily updates for {} 🎉🎉🎉".format(address))
+        return single_line_message("You will now receive daily updates for {} 🎉🎉🎉".format(address))
 
     def handleAQIMessageRequest(self, data):
         aqi = data['queryResult']["outputContexts"][0]['parameters']['aqi']
 
         message = self.getAQIMessage(aqi)
         message = message['health']
-        return self.dialogflow_message(message)
+        return single_line_message(message)
 
     def post(self, request):
         try:
@@ -200,9 +173,9 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleAQIRequest(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
-            elif intent == "subscribe":
+            elif intent == "daily.subscribe":
                 message = self.handleSubscribeRequest(data)
-            elif intent == "unsubscribe":
+            elif intent == "daily.unsubscribe":
                 message = self.handleListSubscriptions(data)
             elif intent == "unsubscribe - yes":
                 message = self.handleUnsubscribe(data)
@@ -211,4 +184,4 @@ class AirQualityIndexAPI(APIView):
             return Response(data=message)
         except:
             print(traceback.format_exc())
-            return Response(data=self.dialogflow_message("No data avaliable"))
+            return Response(data=single_line_message("No data avaliable"))
