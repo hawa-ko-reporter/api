@@ -177,7 +177,7 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleSubscribeRequest(data)
             elif intent == "daily.unsubscribe":
                 message = self.handleListSubscriptions(data)
-            elif intent == "unsubscribe - yes":
+            elif intent == "daily.unsubscribe - yes":
                 message = self.handleUnsubscribe(data)
             else:
                 raise Exception("Not supported")
