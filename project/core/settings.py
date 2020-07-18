@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "asasdasd")
 
 DEBUG = int(os.environ.get("DEBUG", default=0))
 
@@ -123,7 +123,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     "send_email_report": {
         "task": "core.tasks.send_email_report",
-        "schedule": crontab(hour="*/1"),
+        "schedule": crontab(hour="8"),
     },
 }
 
