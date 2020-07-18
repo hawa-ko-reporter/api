@@ -12,7 +12,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import AirQualityInfo
+from .helpers.air_quality_fetcher import getNearestAQI
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription
 from .helpers.geo import distance
@@ -38,8 +38,6 @@ class AirQualityIndexAPI(APIView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.messages = messages
-
-        self.air_quality_info = AirQualityInfo
 
     @staticmethod
     def dialogflow_message(message):
@@ -111,12 +109,13 @@ class AirQualityIndexAPI(APIView):
 
         geo_location = self.reverseGeocode(address)
         print(geo_location)
-        aqi = self.getNearestAQI(
+        aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
 
         aqi['query'] = address
         aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
+        print("SEXY BOI")
         message = {
             'fulfillmentText': [
                 self.prepareMessage(aqi),

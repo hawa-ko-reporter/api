@@ -15,8 +15,8 @@ Once the build is complete, navigate to http://localhost:1337 to ensure the app 
 
 ## Viewing logs
  ```bash
- docker-compose logs 'web'
- docker-compose logs 'celery'
- docker-compose logs 'celery-beat'
- docker-compose logs 'redis'
+ docker-compose logs -t -f --tail 30 'web'
+ docker-compose logs -t -f --tail 30 'celery'
+ docker-compose logs -t -f --tail 30 'celery-beat'
+ docker-compose logs -t -f --tail 30 'redis'
 > ```

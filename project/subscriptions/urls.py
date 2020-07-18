@@ -4,5 +4,5 @@ from . import views
 urlpatterns = [
 
     path('', views.welcome),
-    path('hawa/', views.AirQualityIndexAPI.as_view(), name='Air Quality Index API'),
+    path('api/hawa/', views.AirQualityIndexAPI.as_view(), name='Air Quality Index API'),
 ]
