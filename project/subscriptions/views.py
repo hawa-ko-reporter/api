@@ -94,7 +94,7 @@ class AirQualityIndexAPI(APIView):
     def prepareMessage(self, data):
         message = "The nearest station is {}".format(data['station']['name'])
         message += " \n "
-        message += "It is {} km away".format(data['distance'])
+        message += "It is {:.1f} km away".format(data['distance'])
         message += " "
         message += "The AQI is {} at {}".format(
             data['message']['level'], data['aqi'])
@@ -115,7 +115,6 @@ class AirQualityIndexAPI(APIView):
         aqi['query'] = address
         aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
-        print("SEXY BOI")
         message = {
             'fulfillmentText': [
                 self.prepareMessage(aqi),
