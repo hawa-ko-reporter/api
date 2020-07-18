@@ -92,7 +92,6 @@ class AirQualityIndexAPI(APIView):
     def get(self, request):
         return Response(data="return msg or data")
 
-
     def prepareMessage(self, data):
         message = "The nearest station is {}".format(data['station']['name'])
         message += " \n "
@@ -117,22 +116,7 @@ class AirQualityIndexAPI(APIView):
         aqi['query'] = address
         aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
-        return get_aqi_response_message(aqi,data)
-        # message = {
-        #     'fulfillmentText': [
-        #         self.prepareMessage(aqi),
-        #     ],
-        #     "outputContexts": [
-        #         {
-        #             "name": "{}/contexts/data-upsell-yes".format(data['session']),
-        #             "lifespanCount": 5,
-        #             "parameters": {
-        #                 "aqi": float(aqi['aqi']),
-        #             }
-        #         }
-        #     ]
-        # }
-        # return message
+        return get_aqi_response_message(aqi, data)
 
     def handleUnsubscribe(self, data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
@@ -166,7 +150,7 @@ class AirQualityIndexAPI(APIView):
     def handleSubscribeRequest(self, data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
         platform = data['originalDetectIntentRequest']["source"]
-        address = data['queryResult']['parameters']["Address"]
+        address = data['queryResult']['parameters']["address"]
 
         content = get_name(platform_id, self.facebook_access_token)
         name = handle_fb_name_response(content, '')
@@ -198,7 +182,7 @@ class AirQualityIndexAPI(APIView):
             subscription_location_latitude=user_lat,
             subscription_location_longitude=user_lon,
         )
-        return self.dialogflow_message("You will now receive daily updates for {}".format(address))
+        return self.dialogflow_message("You will now receive daily updates for {} 🎉🎉🎉".format(address))
 
     def handleAQIMessageRequest(self, data):
         aqi = data['queryResult']["outputContexts"][0]['parameters']['aqi']
@@ -211,7 +195,7 @@ class AirQualityIndexAPI(APIView):
         try:
             data = request.data
             intent = data['queryResult']['intent']['displayName']
-
+            print(intent)
             if intent == "request.aqi":
                 message = self.handleAQIRequest(data)
             elif intent == "request.aqi-yes":
