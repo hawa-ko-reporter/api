@@ -71,7 +71,7 @@ class UserSubscription(models.Model):
 
 
 class Program(models.Model):
-    title = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
     content_url = models.URLField()
     reveal_day = models.IntegerField()
@@ -79,4 +79,4 @@ class Program(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.title
+        return self.name
