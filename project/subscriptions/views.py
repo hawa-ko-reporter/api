@@ -92,11 +92,13 @@ class AirQualityIndexAPI(APIView):
         print(geo_location)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
+        if aqi:
+            aqi['query'] = address
+            aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
 
-        aqi['query'] = address
-        aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
-
-        return get_aqi_response_message(aqi, data)
+            return get_aqi_response_message(aqi, data)
+        else:
+            return single_line_message(message="No nearby stations found! 😶")
 
     @staticmethod
     def handleUnsubscribe(data):

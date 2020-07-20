@@ -37,16 +37,20 @@ class Command(BaseCommand):
 
             for user_sub in user_subs:
                 platform_id = user_sub.subscription_user.platform_id
-                station_id = user_sub.subscription.id
+                station_name = user_sub.subscription.name
 
-                station = aqi_fetcher.get_by_station_id(station_id=station_id)
+                station = aqi_fetcher.get_by_station_id(station_name=station_name)
+                if not station:
+                    station = aqi_fetcher.get_by_distance(lat=user_sub.subscription.latitude,
+                                                          lon=user_sub.subscription.longitude)
 
                 messages = messages + prepare_aqi_message(station)
                 message_to_send = "\n".join(messages)
 
-                fb_msg.send_message(platform_id, message_to_send)
+                res = fb_msg.send_message(platform_id, message_to_send)
 
                 self.stdout.write(platform_id)
+                print(res)
             self.stdout.write("AQI report was sent was sent to {} subscribers".format(len(user_subs)))
         else:
             self.stdout.write("No subscribers to sent")

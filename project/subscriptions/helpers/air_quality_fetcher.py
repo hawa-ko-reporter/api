@@ -21,7 +21,12 @@ def getNearestAQI(lat, lon):
         station['distance'] = distance(
             lat, lon, float(station["lat"]), float(station["lon"]))
     stations.sort(key=lambda x: (x["distance"]))
-    return stations[0]
+
+    is_station_nearby = stations[0]['distance'] < 10
+    if is_station_nearby:
+        return stations[0]
+    else:
+        return {}
 
 
 def aqi_level(aqi):
@@ -57,6 +62,7 @@ class AirQualityFetcher:
 
     def __init__(self, aqi_token):
         self.url = self.url.format(aqi_token)
+        print(self.url)
 
     def map_data(self):
         stations = json.loads(self.response_text)['data']
@@ -66,11 +72,26 @@ class AirQualityFetcher:
         response = requests.get(self.url)
         self.response_text = response.text
 
-    def get_by_station_id(self, station_id):
+    def get_by_distance(self, lat, lon):
         self.get_aqi()
         stations = self.map_data()
-        station = next(x for x in stations if x["uid"] == station_id)
-        return station
 
-    def get_by_nearest_location(self, lat, lon):
-        pass
+        for subs in stations:
+            subs_lat = subs.get("latitude")
+            subs_lon = subs.get("longitude")
+            distance_in_km = distance(subs_lat, subs_lon, lat, lon)
+            subs['distance'] = distance_in_km
+
+        stations.sort(key=lambda x: (x["distance"]))
+        return stations[0]
+
+    def get_by_station_id(self, station_name):
+        self.get_aqi()
+        stations = self.map_data()
+        selected_station = None
+        for x in stations:
+            current_station = x['station']['name']
+            if current_station == station_name:
+                selected_station = current_station
+
+        return selected_station
