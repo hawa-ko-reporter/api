@@ -3,7 +3,7 @@ version: '3.7'
 services:
   web:
     env_file:
-      - web-variables.env
+      - web.env
     build: ./project
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -22,6 +22,8 @@ services:
   redis:
     image: redis:alpine
   celery:
+    env_file:
+      - web.env
     build: ./project
     command: celery -A core worker -l info
     volumes:
@@ -36,6 +38,8 @@ services:
     depends_on:
       - redis
   celery-beat:
+    env_file:
+      - web.env
     build: ./project
     command: celery -A core beat -l info
     volumes:

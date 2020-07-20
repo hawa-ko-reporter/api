@@ -1,6 +1,14 @@
 # pull official base image
 FROM python:3.8.2-alpine
 
+ARG FB_ACCESS_TOKEN
+ARG AQI_TOKEN
+ARG GEO_TOKEN
+
+RUN echo ${FB_ACCESS_TOKEN}
+RUN echo ${AQI_TOKEN}
+RUN echo ${GEO_TOKEN}
+
 # set work directory
 WORKDIR /usr/src/app
 

@@ -48,7 +48,7 @@ class Command(BaseCommand):
             delta_day = delta.days
             day_content = Program.objects.filter(reveal_day=delta_day).first()
 
-            messages_to_send = ["Tip #{} :) ".format(delta_day),
+            messages_to_send = ["Day #{} :) ".format(delta_day),
                                 "",
                                 day_content.name,
                                 "",
