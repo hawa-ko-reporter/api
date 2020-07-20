@@ -1,0 +1,134 @@
+[
+  {
+    "model": "subscriptions.Program",
+    "pk": 0,
+    "fields": {
+      "name": "How dangerous is air pollution to the human health?",
+      "reveal_day": 1,
+      "description": "Air pollution has equivalent effects to the human health just as smoking tobacco. Breathing polluted air kills 7 million people every year",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 1,
+    "fields": {
+      "name": "What are the impacts of air pollution on the environment? ",
+      "reveal_day": 2,
+      "description": "The impacts of air pollution on the environment is detrimental as it leads to different consequences like acid rain, smog, global warming, climate change, ozone layer depletion and many more. All these consequences make the environment less suitable to live in for all the living beings.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 2,
+    "fields": {
+      "name": "Is air pollution leading to global warming?",
+      "reveal_day": 3,
+      "description": "Yes, air pollution is leading to global warming. Global warming is primarily caused by the emission of harmful gases like carbon dioxide, carbon monoxide and sulphur dioxide into the atmosphere\n which is what exactly happens in the air pollution.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 3,
+    "fields": {
+      "name": "How to protect children from air pollution?",
+      "reveal_day": 4,
+      "description": "Staying indoors when the pollution level in your area is too high can be one of the protective measures for children. But this cannot be adopted every time hence making the children\n wear mask as protective gear can be useful. Likewise avoiding busy roads with high traffic might help in this case as well.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 4,
+    "fields": {
+      "name": "How to protect elderly people from air pollution?",
+      "reveal_day": 5,
+      "description": "The elderly people can be protected against the air pollution by limiting their exposure to the polluted environment, using eco-friendly appliances at home and having good ventilation facilities \nat home for optimum filtration of the air.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 5,
+    "fields": {
+      "name": "How to protect pregnant women from air pollution?",
+      "reveal_day": 6,
+      "description": "Keeping an eye on the air quality index and avoiding going outdoors when the air quality is poor can help in protecting the pregnant mothers from air pollution. Likewise staying away from any \nsort of smoke, wearing masks can also help in preventing from getting them exposed to the detrimental effects of air pollution.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 6,
+    "fields": {
+      "name": "How can I contribute in controlling the air pollution? ",
+      "reveal_day": 7,
+      "description": "You as an individual can also help in controlling the air pollution as every tiny steps matter. Using electric vehicles, using public transportation more often, avoiding excessive use of your \nautomobile, conserving energy by switching off lights and temperature controlling devices when not needed can be very useful in minimizing the air pollution",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 7,
+    "fields": {
+      "name": "Can having humidifiers at home help in minimizing \nthe impacts of air pollution? ",
+      "reveal_day": 8,
+      "description": "No humidifiers don\u2019t work at all in minimizing the impacts of air pollution",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 8,
+    "fields": {
+      "name": "Which mask protects me the best from air pollution?",
+      "reveal_day": 9,
+      "description": "Wearing a 3M N95 masks will protect you the best from air pollution. These masks are high performing and also budget friendly. They are easily available in different local pharmacies. ",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 9,
+    "fields": {
+      "name": "Are cloth masks effective for protection against\n air pollution?",
+      "reveal_day": 10,
+      "description": "Cloth masks are not much effective in protecting an individual against the air pollution. The pores in the cloth allows the small microscopic pollutants to enter the person\u2019s breathing system by \nwhich they get exposed to air pollution. Hence, cloth masks are not preferred as a protection against air pollution",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 10,
+    "fields": {
+      "name": "Are  surgical masks good for protection against air \npollution? ",
+      "reveal_day": 11,
+      "description": "Surgical masks are certainly better than cloth masks available in the market. But a guarantee protection from the air pollutants can still not be guaranteed with its use.",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  },
+  {
+    "model": "subscriptions.Program",
+    "pk": 11,
+    "fields": {
+      "name": "What is the difference between a KN95 and N95 mask? ",
+      "reveal_day": 12,
+      "description": " KN95 masks are the Chinese standards for masks and N95 is the American standard for masks. They both are almost equivalent in all other features",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z"
+    }
+  }
+]

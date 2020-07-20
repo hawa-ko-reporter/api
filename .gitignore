@@ -1,0 +1,11 @@
+*.pyc
+__pycache__
+env
+*.sqlite3
+.DS_Store
+staticfiles
+
+.idea
+web.env
+project/celerybeat-schedule
+project/celerybeat.pid

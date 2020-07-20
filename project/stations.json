@@ -1,0 +1,230 @@
+[
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10491,
+    "fields": {
+      "latitude": 28.05275,
+      "longitude": 81.6222,
+      "name": "Nepalgunj, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 3845,
+    "fields": {
+      "latitude": 26.85272778,
+      "longitude": 80.99632778,
+      "name": "Central School, Lucknow, India",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 9469,
+    "fields": {
+      "latitude": 27.712463,
+      "longitude": 85.315704,
+      "name": "US Embassy, Phora Durbar, Kathmandu, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10493,
+    "fields": {
+      "latitude": 27.673762,
+      "longitude": 85.417528,
+      "name": "Birendra School, Bhaktapur, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10494,
+    "fields": {
+      "latitude": 28.143122,
+      "longitude": 84.08551,
+      "name": "Pokhara University, PKR, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 11552,
+    "fields": {
+      "latitude": 28.205817,
+      "longitude": 83.97361,
+      "name": "DHM Pokhara, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 9307,
+    "fields": {
+      "latitude": 27.573483,
+      "longitude": 84.498578,
+      "name": "Chitwan, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 8673,
+    "fields": {
+      "latitude": 26.84578611,
+      "longitude": 80.93874444,
+      "name": "Lalbagh, West Lucknow, Lucknow, India",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 11550,
+    "fields": {
+      "latitude": 27.722654,
+      "longitude": 85.222836,
+      "name": "Shankha Park, KTM, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 11553,
+    "fields": {
+      "latitude": 27.9914,
+      "longitude": 82.5346,
+      "name": "Dang, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10492,
+    "fields": {
+      "latitude": 27.156708,
+      "longitude": 84.997761,
+      "name": "Simara, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 9468,
+    "fields": {
+      "latitude": 27.738703,
+      "longitude": 85.336205,
+      "name": "US Embassy, Kathmandu, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 9287,
+    "fields": {
+      "latitude": 27.608483,
+      "longitude": 85.547803,
+      "name": "Dhulikhel, Kavre, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10495,
+    "fields": {
+      "latitude": 27.65311,
+      "longitude": 85.302252,
+      "name": "Bhaisipati, KTM, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 8187,
+    "fields": {
+      "latitude": 26.4703088,
+      "longitude": 80.3251749,
+      "name": "Nehru Nagar, Kanpur, India",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 8188,
+    "fields": {
+      "latitude": 26.83399722,
+      "longitude": 80.8917361,
+      "name": "Talkatora, Lucknow, India",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 11551,
+    "fields": {
+      "latitude": 26.664451,
+      "longitude": 87.195171,
+      "name": "Jhumka, Sunsari, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 12516,
+    "fields": {
+      "latitude": 26.98066,
+      "longitude": 87.34392,
+      "name": "Dhankuta, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10496,
+    "fields": {
+      "latitude": 28.258,
+      "longitude": 83.968,
+      "name": "Gandaki Boarding School, PKR, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
+  }
+]

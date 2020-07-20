@@ -1,0 +1,55 @@
+version: '3.7'
+
+services:
+  web:
+    env_file:
+      - web.env
+    build: ./project
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./project/:/usr/src/app/
+    ports:
+      - 1337:8000
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - FB_ACCESS_TOKEN=EAAHkSMVrt8kBAL998kT4mMJYYMyxK9gEV6KtDsl5hdfC7biggAN5gIt9ISoqMDfU4C2JQgIMRsrI4qlBP5wUtKEH6c4SOsIsPDjRa6y1I5yfkVZAtmUfhqNnUxg91wBDIk2W0jHDcZCr4iMxxWCjYlKQ57MINGm9ZBuRO8MXAiYQfVEjOXOSR2G3buhlHQZD
+      - AQI_TOKEN=9676b511e1f0fed7303343500998434a0d7b9245
+      - GEO_TOKEN=4f7a333111ac5f
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+  celery:
+    env_file:
+      - web.env
+    build: ./project
+    command: celery -A core worker -l info
+    volumes:
+      - ./project/:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - FB_ACCESS_TOKEN=EAAHkSMVrt8kBAL998kT4mMJYYMyxK9gEV6KtDsl5hdfC7biggAN5gIt9ISoqMDfU4C2JQgIMRsrI4qlBP5wUtKEH6c4SOsIsPDjRa6y1I5yfkVZAtmUfhqNnUxg91wBDIk2W0jHDcZCr4iMxxWCjYlKQ57MINGm9ZBuRO8MXAiYQfVEjOXOSR2G3buhlHQZD
+      - AQI_TOKEN=9676b511e1f0fed7303343500998434a0d7b9245
+      - GEO_TOKEN=4f7a333111ac5f
+    depends_on:
+      - redis
+  celery-beat:
+    env_file:
+      - web.env
+    build: ./project
+    command: celery -A core beat -l info
+    volumes:
+      - ./project/:/usr/src/app/
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=dbaa1_i7%*3r9-=z-+_mz4r-!qeed@(-a_r(g@k8jo8y3r27%m
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - FB_ACCESS_TOKEN=EAAHkSMVrt8kBAL998kT4mMJYYMyxK9gEV6KtDsl5hdfC7biggAN5gIt9ISoqMDfU4C2JQgIMRsrI4qlBP5wUtKEH6c4SOsIsPDjRa6y1I5yfkVZAtmUfhqNnUxg91wBDIk2W0jHDcZCr4iMxxWCjYlKQ57MINGm9ZBuRO8MXAiYQfVEjOXOSR2G3buhlHQZD
+      - AQI_TOKEN=9676b511e1f0fed7303343500998434a0d7b9245
+      - GEO_TOKEN=4f7a333111ac5f
+    depends_on:
+      - redis
