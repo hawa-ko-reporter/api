@@ -75,7 +75,7 @@ def add_output_context(dialogflow_reply, data, aqi):
     dialogflow_reply["outputContexts"] = [
         {
             "name": "{}/contexts/data-upsell-yes".format(data['session']),
-            "lifespanCount": 5,
+            "lifespanCount": 1,
             "parameters": {
                 "aqi": float(aqi['aqi']),
             }
@@ -146,7 +146,16 @@ def fb_card_message(title, message, image_url, maps_url, messages):
             {
                 "text": {
                     "text": [
-                        messages[2]
+
+                    ]
+                },
+                "platform": "FACEBOOK"
+            },
+            {
+                "quickReplies": {
+                    "title": messages[2],
+                    "quickReplies": [
+                        "Get Daily"
                     ]
                 },
                 "platform": "FACEBOOK"
