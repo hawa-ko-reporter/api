@@ -6,6 +6,6 @@ env
 staticfiles
 
 .idea
-web.env
+web-variables.env
 project/celerybeat-schedule
 project/celerybeat.pid

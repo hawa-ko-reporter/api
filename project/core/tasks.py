@@ -6,7 +6,6 @@ from django.core.management import call_command
 def sample_task():
     print("The sample task just ran.")
     # call_command("daily_aqi", )
-    call_command("daily_message", )
 
 
 @shared_task

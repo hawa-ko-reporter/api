@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Asia/Kathmandu'
 
 USE_I18N = True
 
@@ -123,14 +123,38 @@ CELERY_BEAT_SCHEDULE = {
     },
     "send_email_report": {
         "task": "core.tasks.send_email_report",
-        "schedule": crontab(hour="8"),
+        "schedule": crontab(hour="7"),
     },
     "send_daily_message": {
         "task": "core.tasks.send_daily_message",
-        "schedule": crontab(hour="9"),
+        "schedule": crontab(hour="8"),
     },
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@email.com"
 ADMINS = [("testuser", "test.user@email.com"), ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '../debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

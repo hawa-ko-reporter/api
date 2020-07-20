@@ -24,6 +24,10 @@ today_start = make_aware(datetime.combine(today, time()))
 today_end = make_aware(datetime.combine(tomorrow, time()))
 import os
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     text_message = ""
@@ -36,6 +40,7 @@ class Command(BaseCommand):
     today = timezone.now()
 
     def check_for_every_subs(self, user_subs):
+
         total_content_count = Program.objects.all().count()
         for user_sub in user_subs:
             platform_id = user_sub.subscription_user.platform_id
@@ -58,6 +63,9 @@ class Command(BaseCommand):
             print(message_to_send)
             res = self.fb_msg.send_message(platform_id, message_to_send)
 
+            message = {
+                platform_id
+            }
             self.stdout.write(str(res))
 
     def handle(self, *args, **options):
