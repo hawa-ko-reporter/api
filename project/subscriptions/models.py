@@ -23,6 +23,14 @@ class SubscriptionType(models.Model):
         return self.name
 
 
+class Message(models.Model):
+    message = models.CharField(max_length=200)
+    send_only_to_subscribers = models.BooleanField()
+
+    def __str__(self):
+        return self.message
+
+
 class Subscription(models.Model):
     subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)

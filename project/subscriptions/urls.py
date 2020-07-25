@@ -5,4 +5,5 @@ urlpatterns = [
 
     path('', views.welcome),
     path('api/hawa/', views.AirQualityIndexAPI.as_view(), name='Air Quality Index API'),
+    path('message/new/', views.message_new, name='message_new'),
 ]

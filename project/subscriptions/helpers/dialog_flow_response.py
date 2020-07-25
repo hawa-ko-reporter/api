@@ -1,6 +1,6 @@
 def prepare_aqi_message(data):
     messages = ["The nearest station is {}".format(data['station']['name']),
-                "It is {:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
+                "{:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
             data['message']['level'], data['aqi']), "I would say {} ".format(data['message']['health']),
                 "Do you want more tips?"]
 
@@ -31,7 +31,7 @@ def prepare_aqi_message_v2(data):
         'image_url': get_aqi_image(data['aqi']),
         'map_url': "https://www.google.com/maps/search/?api=1&query={},{}".format(data['lat'], data['lon']),
         'message': [
-            "It is {:.1f} km away".format(data['distance']),
+            "It is {:.1f} km away from ".format(data['distance'], data['query']),
             "I would say {} ".format(data['message']['health']),
             "Do you want more tips?"
         ]

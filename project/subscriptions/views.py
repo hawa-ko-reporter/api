@@ -6,11 +6,14 @@ import traceback
 
 import requests
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from .forms import MessageForm
 from .helpers.consts import messages
 from .helpers.air_quality_fetcher import getNearestAQI
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
@@ -75,7 +78,7 @@ class AirQualityIndexAPI(APIView):
     def prepareMessage(self, data):
         message = "The nearest station is {}".format(data['station']['name'])
         message += " \n "
-        message += "It is {:.1f} km away".format(data['distance'])
+        message += "It is {:.1f} km away".format(data['distance'] from )
         message += " "
         message += "The AQI is {} at {}".format(
             data['message']['level'], data['aqi'])
@@ -187,3 +190,15 @@ class AirQualityIndexAPI(APIView):
         except:
             print(traceback.format_exc())
             return Response(data=single_line_message("No data avaliable"))
+
+
+def message_new(request):
+    if request.method == "POST":
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+    else:
+        form = MessageForm()
+    return render(request, 'subscriptions/message_edit.html', {'form': form})
