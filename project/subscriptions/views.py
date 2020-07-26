@@ -103,9 +103,18 @@ class AirQualityIndexAPI(APIView):
         else:
             return single_line_message(message="No nearby stations found! 😶")
 
-    @staticmethod
-    def handleMaskQuery(data):
-        return single_line_message(message="NO")
+    def handleMaskQuery(self, data):
+        address = data['queryResult']['parameters']['address']
+        geo_location = self.reverseGeocode(address)
+        aqi = getNearestAQI(
+            float(geo_location[0]), float(geo_location[1]))
+        if aqi:
+            aqi['query'] = address
+            aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
+            return single_line_message(message=aqi['message']['health'])
+        else:
+            return single_line_message(message="No nearby stations found! 😶")
+
 
     @staticmethod
     def handleUnsubscribe(data):

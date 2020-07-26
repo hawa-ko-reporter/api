@@ -104,6 +104,11 @@ def prepare_subscriptions_message(subscriptions):
     return messages
 
 
+def get_mask_response_message(aqi, data):
+
+    return reply
+
+
 def get_aqi_response_message(aqi, data):
     print(aqi['aqi'])
     messages = prepare_aqi_message_v2(aqi)
