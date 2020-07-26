@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.8.2-alpine
+FROM python:3.6.7-alpine3.6
 
 ARG FB_ACCESS_TOKEN
 ARG AQI_TOKEN

@@ -1,13 +1,13 @@
 messages = {
     0: [
         "It’s quite good today. You don’t need to wear a mask for now.",
-        "It’s a perfect day to be outside.",
-        "Go for a run today",
-        "If you have a small hill nearby, go for a hike."
+        "It’s a perfect day to be outside. No masks needed",
+        "Go for a run today. No masks needed",
+        "If you have a small hill nearby, go for a hike. No mask needed"
     ],
     1: [
         "It’s a good day outside.However, if you are allergic to pollution, wear a surgical mask.",
-        "It’s a good day to go for a run. "
+        "It’s a good day to go for a run, if you are allergic to pollution at least a cloth mask is recommended "
     ],
     2: [
         "It is OK to be outside.",

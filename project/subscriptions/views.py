@@ -104,6 +104,10 @@ class AirQualityIndexAPI(APIView):
             return single_line_message(message="No nearby stations found! 😶")
 
     @staticmethod
+    def handleMaskQuery(data):
+        return single_line_message(message="NO")
+
+    @staticmethod
     def handleUnsubscribe(data):
         platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
         platform = data['originalDetectIntentRequest']["source"]
@@ -184,6 +188,8 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleListSubscriptions(data)
             elif intent == "daily.unsubscribe - yes":
                 message = self.handleUnsubscribe(data)
+            elif intent == "query.do-i-need-mask":
+                message = self.handleMaskQuery(data)
             else:
                 raise Exception("Not supported")
             return Response(data=message)

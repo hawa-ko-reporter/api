@@ -7,31 +7,37 @@ def prepare_aqi_message(data):
     return messages
 
 
-def get_aqi_image(aqi):
+def get_aqi_message(aqi):
     size = "500x300"
     aqi = int(aqi)
+
+    image = None
+    message = None
     if aqi <= 50:
-        return "https://dummyimage.com/{}/00e400/000000.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/00e400/000000.png&text={}".format(size, aqi)
     elif aqi <= 100:
-        return "https://dummyimage.com/{}/ffff00/000000.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/ffff00/000000.png&text={}".format(size, aqi)
     elif aqi <= 150:
-        return "https://dummyimage.com/{}/ff7e00/ffffff.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/ff7e00/ffffff.png&text={}".format(size, aqi)
     elif aqi <= 200:
-        return "https://dummyimage.com/{}/ff0000/ffffff.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/ff0000/ffffff.png&text={}".format(size, aqi)
     elif aqi <= 300:
-        return "https://dummyimage.com/{}/8f3f97/ffffff.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/8f3f97/ffffff.png&text={}".format(size, aqi)
     else:
-        return "https://dummyimage.com/{}/7e0023/ffffff.png&text={}".format(size, aqi)
+        image = "https://dummyimage.com/{}/7e0023/ffffff.png&text={}".format(size, aqi)
+
+    return image, message
 
 
 def prepare_aqi_message_v2(data):
+    image, message = get_aqi_message(data['aqi'])
     return {
         'title': "AQI is at {}".format(data['aqi']),
         'description': "It is considered {} ".format(data['message']['level']),
-        'image_url': get_aqi_image(data['aqi']),
+        'image_url': image,
         'map_url': "https://www.google.com/maps/search/?api=1&query={},{}".format(data['lat'], data['lon']),
         'message': [
-            "It is {:.1f} km away from ".format(data['distance'], data['query']),
+            "It is {:.1f} km away from {}".format(data['distance'], data['query']),
             "I would say {} ".format(data['message']['health']),
             "Do you want more tips?"
         ]
