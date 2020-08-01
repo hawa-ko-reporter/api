@@ -18,7 +18,7 @@ from .helpers.consts import messages
 from .helpers.air_quality_fetcher import getNearestAQI
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
-from .models import User, UserSubscription, Subscription
+from .models import User, UserSubscription, Subscription, AQIRequestLog
 from .helpers.geo import distance
 
 
@@ -75,7 +75,8 @@ class AirQualityIndexAPI(APIView):
     def get(self, request):
         return Response(data="return msg or data")
 
-    def prepare_message(self, data):
+    @staticmethod
+    def prepare_message(data):
         message = "The nearest station is {}".format(data['station']['name'])
         message += " \n "
         message += "It is {:.1f} km away".format(data['distance'])
@@ -88,11 +89,31 @@ class AirQualityIndexAPI(APIView):
         message += "Do you want more tips?"
         return message
 
+    def load_user_data_from_fb(self, data):
+        platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
+        platform = data['originalDetectIntentRequest']["source"]
+        content = get_name(platform_id, self.facebook_access_token)
+        name = handle_fb_name_response(content, '')
+
+        return platform, platform_id, name
+
+    def save_aqi_request_to_log(self, user, data, subscription, recommendation):
+        platform, platform_id, name = self.load_user_data_from_fb(data)
+        user, created = User.objects.get_or_create(
+            platform=platform,
+            platform_id=platform_id,
+            full_name=name
+        )
+
+        AQIRequestLog.objects.create(
+            user=user,
+            subscription=subscription,
+            recommendation=recommendation
+        )
+
     def handleAQIRequest(self, data):
         address = data['queryResult']['parameters']['address']
-
         geo_location = self.reverseGeocode(address)
-        print(geo_location)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
         if aqi:
@@ -115,21 +136,17 @@ class AirQualityIndexAPI(APIView):
         else:
             return single_line_message(message="No nearby stations found! 😶")
 
-
-    @staticmethod
-    def handleUnsubscribe(data):
-        platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
-        platform = data['originalDetectIntentRequest']["source"]
+    def handleUnsubscribe(self, data):
+        platform, platform_id, name = self.load_user_data_from_fb(data)
         user = User.objects.get(platform=platform, platform_id=platform_id)
         UserSubscription.objects.select_related().filter(subscription_user=user,
                                                          is_archived=False).update(is_archived=True)
 
         return single_line_message(message="You have been unsubscribed")
 
-    @staticmethod
-    def handleListSubscriptions(data):
-        platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
-        platform = data['originalDetectIntentRequest']["source"]
+    def handleListSubscriptions(self, data):
+        platform, platform_id, name = self.load_user_data_from_fb(data)
+
         user = User.objects.get(platform=platform, platform_id=platform_id)
         subscriptions = UserSubscription.objects.select_related().filter(subscription_user=user, is_archived=False)
 
@@ -139,12 +156,8 @@ class AirQualityIndexAPI(APIView):
         return single_line_message(message="You do not have any subscriptions")
 
     def handleSubscribeRequest(self, data):
-        platform_id = data['originalDetectIntentRequest']['payload']['data']['sender']['id']
-        platform = data['originalDetectIntentRequest']["source"]
+        platform, platform_id, name = self.load_user_data_from_fb(data)
         address = data['queryResult']['parameters']["address"]
-
-        content = get_name(platform_id, self.facebook_access_token)
-        name = handle_fb_name_response(content, '')
         geo_location = self.reverseGeocode(address)
 
         user_lat = geo_location[0]
