@@ -98,6 +98,7 @@ class Recommendation(models.Model):
         return self.recommendation_text
 
 
+
 class FollowUpQuestions(DefaultModel):
     recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
     follow_up = models.TextField()
@@ -107,6 +108,7 @@ class FollowUpQuestions(DefaultModel):
 
 
 class AQIRecommendations(models.Model):
+
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -7,11 +7,9 @@ from .models import Recommendation, AQIRecommendations, FollowUpQuestions
 class FollowUpQuestionsAdmin(ImportExportModelAdmin):
     pass
 
-
 @admin.register(Recommendation)
 class RecommendationAdmin(ImportExportModelAdmin):
     pass
-
 
 @admin.register(AQIRecommendations)
 class AQIRequestLogAdmin(ImportExportModelAdmin):

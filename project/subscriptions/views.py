@@ -19,6 +19,7 @@ from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
+
 from .helpers.geo import distance
 
 
@@ -106,6 +107,7 @@ class AirQualityIndexAPI(APIView):
         )
 
         AQIRecommendations.objects.create(
+
             user=user,
             subscription=subscription,
             recommendation=recommendation,
