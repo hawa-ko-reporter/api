@@ -114,6 +114,12 @@ class AirQualityIndexAPI(APIView):
             location_name=location_name
         )
 
+    def handleAQISummaryReport(self, data):
+        address = data['queryResult']['parameters']['address']
+        geo_location = self.reverseGeocode(address)
+
+        return single_line_message("Hmm! I am learning how to do that. Give me a few days")
+
     def handleAQIRequest(self, data):
         address = data['queryResult']['parameters']['address']
         geo_location = self.reverseGeocode(address)
@@ -223,6 +229,8 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleUnsubscribe(data)
             elif intent == "query.do-i-need-mask":
                 message = self.handleMaskQuery(data)
+            elif intent == "aqi.summary.request":
+                message = self.handleAQISummaryReport(data)
             else:
                 raise Exception("Not supported")
             return Response(data=message)
