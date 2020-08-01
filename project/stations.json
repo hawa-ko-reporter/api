@@ -226,5 +226,17 @@
       "updated": "2020-04-15T09:52:03.538Z",
       "subscription_type": 1
     }
+  },
+  {
+    "model": "subscriptions.Subscription",
+    "pk": 10495,
+    "fields": {
+      "latitude": 27.65311,
+      "longitude": 85.302252,
+      "name": "Ratnapark, Kathmandu, Nepal",
+      "created": "2020-04-15T09:52:03.538Z",
+      "updated": "2020-04-15T09:52:03.538Z",
+      "subscription_type": 1
+    }
   }
 ]
