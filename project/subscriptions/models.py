@@ -14,6 +14,15 @@ DELIVERY_FREQ = (
 
 
 # Create your models here.
+
+class DefaultModel(models.Model):
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
 class SubscriptionType(models.Model):
     name = models.CharField(max_length=200)
     updated = models.DateTimeField(auto_now=True)
@@ -89,7 +98,17 @@ class Recommendation(models.Model):
         return self.recommendation_text
 
 
-class AQIRequestLog(models.Model):
+
+class FollowUpQuestions(DefaultModel):
+    recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
+    follow_up = models.TextField()
+
+    def __str__(self):
+        return self.follow_up
+
+
+class AQIRecommendations(models.Model):
+
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
