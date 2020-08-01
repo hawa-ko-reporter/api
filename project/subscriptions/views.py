@@ -124,6 +124,7 @@ class AirQualityIndexAPI(APIView):
             aqi['query'] = address
             aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
             recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+            print(aqi['station']['name'])
             subscription = Subscription.objects.get(name=aqi['station']['name'])
 
             aqi['message'] = recommendation.recommendation_text
