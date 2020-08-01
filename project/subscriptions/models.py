@@ -39,6 +39,7 @@ class Subscription(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -82,6 +83,7 @@ class Recommendation(models.Model):
     subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.SET_NULL)
     recommendation_category = models.CharField(max_length=200)
     recommendation = models.TextField()
+    is_active = models.BooleanField(default=True)
 
 
 class AQIRequestLog(models.Model):
@@ -99,6 +101,7 @@ class Program(models.Model):
     reveal_day = models.IntegerField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
