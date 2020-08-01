@@ -82,11 +82,11 @@ class UserSubscription(models.Model):
 class Recommendation(models.Model):
     subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
     recommendation_category = models.CharField(max_length=200)
-    recommendation = models.TextField()
+    recommendation_text = models.TextField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.recommendation
+        return self.recommendation_text
 
 
 class AQIRequestLog(models.Model):

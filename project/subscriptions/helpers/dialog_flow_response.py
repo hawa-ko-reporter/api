@@ -33,12 +33,12 @@ def prepare_aqi_message_v2(data):
     image, message = get_aqi_message(data['aqi'])
     return {
         'title': "AQI is at {}".format(data['aqi']),
-        'description': "It is considered {} ".format(data['message']['level']),
+        'description': "It is considered {} ".format(data['health']),
         'image_url': image,
         'map_url': "https://www.google.com/maps/search/?api=1&query={},{}".format(data['lat'], data['lon']),
         'message': [
             "It is {:.1f} km away from {}".format(data['distance'], data['query']),
-            "I would say {} ".format(data['message']['health']),
+            "I would say {} ".format(data['message']),
             "Do you want more tips?"
         ]
     }
@@ -102,11 +102,6 @@ def prepare_subscriptions_message(subscriptions):
         messages.append(row.subscription.name)
     messages.append("Do you want to un-subscribe?")
     return messages
-
-
-def get_mask_response_message(aqi, data):
-
-    return reply
 
 
 def get_aqi_response_message(aqi, data):

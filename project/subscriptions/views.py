@@ -15,10 +15,10 @@ from rest_framework.views import APIView
 
 from .forms import MessageForm
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import getNearestAQI
+from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
-from .models import User, UserSubscription, Subscription, AQIRequestLog
+from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
 from .helpers.geo import distance
 
 
@@ -116,9 +116,14 @@ class AirQualityIndexAPI(APIView):
         geo_location = self.reverseGeocode(address)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
+
         if aqi:
             aqi['query'] = address
-            aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
+            aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
+            recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+            print(aqi_code, recommendation)
+            aqi['message'] = recommendation.recommendation_text
+            aqi['health'] = health
 
             return get_aqi_response_message(aqi, data)
         else:
