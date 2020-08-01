@@ -78,6 +78,20 @@ class UserSubscription(models.Model):
         return self.subscription_user.full_name
 
 
+class Recommendation(models.Model):
+    subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.SET_NULL)
+    recommendation_category = models.CharField(max_length=200)
+    recommendation = models.TextField()
+
+
+class AQIRequestLog(models.Model):
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL)
+    user_recommendation = models.ForeignKey(User, on_delete=models.SET_NULL)
+
+
 class Program(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
