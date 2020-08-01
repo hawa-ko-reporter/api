@@ -3,6 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from .models import Recommendation, AQIRecommendations, FollowUpQuestions,Subscription
 
 
+
 @admin.register(FollowUpQuestions)
 class FollowUpQuestionsAdmin(ImportExportModelAdmin):
     pass
