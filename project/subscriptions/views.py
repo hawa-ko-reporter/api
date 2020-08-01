@@ -97,7 +97,7 @@ class AirQualityIndexAPI(APIView):
 
         return platform, platform_id, name
 
-    def save_aqi_request_to_log(self, data, subscription, recommendation):
+    def save_aqi_request_to_log(self, data, subscription, recommendation, location_name):
         platform, platform_id, name = self.load_user_data_from_fb(data)
         user, created = User.objects.get_or_create(
             platform=platform,
@@ -108,7 +108,8 @@ class AirQualityIndexAPI(APIView):
         AQIRequestLog.objects.create(
             user=user,
             subscription=subscription,
-            recommendation=recommendation
+            recommendation=recommendation,
+            location_name=location_name
         )
 
     def handleAQIRequest(self, data):
@@ -126,7 +127,7 @@ class AirQualityIndexAPI(APIView):
             aqi['message'] = recommendation.recommendation_text
             aqi['health'] = health
 
-            self.save_aqi_request_to_log(data, subscription, recommendation)
+            self.save_aqi_request_to_log(data, subscription, recommendation, address)
             return get_aqi_response_message(aqi, data)
         else:
             return single_line_message(message="No nearby stations found! 😶")

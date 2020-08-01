@@ -95,6 +95,7 @@ class AQIRequestLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
     recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
+    location_name = models.CharField(max_length=200, null=True)
 
     def __str__(self):
         return self.user.full_name
