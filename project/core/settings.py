@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "orders.apps.OrdersConfig",
     "subscriptions.apps.SubscriptionsConfig",
+    'import_export',
 ]
 
 MIDDLEWARE = [

@@ -80,18 +80,21 @@ class UserSubscription(models.Model):
 
 
 class Recommendation(models.Model):
-    subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.SET_NULL)
+    subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
     recommendation_category = models.CharField(max_length=200)
     recommendation = models.TextField()
     is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.recommendation
 
 
 class AQIRequestLog(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL)
-    user_recommendation = models.ForeignKey(User, on_delete=models.SET_NULL)
+    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
+    recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
 
 
 class Program(models.Model):
