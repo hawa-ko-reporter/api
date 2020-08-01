@@ -29,6 +29,23 @@ def getNearestAQI(lat, lon):
         return {}
 
 
+def get_aqi_code(aqi):
+    aqi = int(aqi)
+    if aqi <= 50:
+        message = 0.0, "good"
+    elif aqi <= 100:
+        message = 1.0, ""
+    elif aqi <= 150:
+        message = 2.0, ""
+    elif aqi <= 200:
+        message = 3.0, ""
+    elif aqi <= 300:
+        message = 4.0, ""
+    else:
+        message = 5.0, ""
+    return message
+
+
 def aqi_level(aqi):
     aqi = int(aqi)
     if aqi <= 50:

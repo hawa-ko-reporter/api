@@ -20,7 +20,7 @@ messages = {
         "Consider moving activities indoor or rescheduling. ",
         "Take more breaks during outdoor activities.",
         "Spend less time near busy roads.",
-        "Wear an air filter mask like N95."
+            "Wear an air filter mask like N95."
     ],
     4: [
         "The air quality is very harmful outside.",
