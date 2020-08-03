@@ -6,6 +6,22 @@ import requests
 from .geo import distance
 
 
+def get_aqi(lat, lon, results_to_return=10):
+    aqi_token = os.environ.get('AQI_TOKEN', '').strip()
+    url = "https://api.waqi.info/map/bounds/?token={}&latlng=26.3978980576,80.0884245137,30.4227169866,88.1748043151".format(
+        aqi_token)
+    response = requests.get(url)
+    stations = json.loads(response.text)['data']
+
+    for station in stations:
+        print(lat, lon, station["lat"], station["lon"])
+        station['distance'] = distance(
+            lat, lon, float(station["lat"]), float(station["lon"]))
+
+    stations.sort(key=lambda x: (x["distance"]))
+    return stations[0:results_to_return]
+
+
 def getNearestAQI(lat, lon):
     aqi_token = os.environ.get('AQI_TOKEN', '').strip()
     url = "https://api.waqi.info/map/bounds/?token={}&latlng=26.3978980576,80.0884245137,30.4227169866,88.1748043151".format(
@@ -21,7 +37,7 @@ def getNearestAQI(lat, lon):
             lat, lon, float(station["lat"]), float(station["lon"]))
     stations.sort(key=lambda x: (x["distance"]))
 
-    is_station_nearby = stations[0]['distance'] < 20
+    is_station_nearby = stations[0]['distance'] < 30
     if is_station_nearby:
         return stations[0]
     else:

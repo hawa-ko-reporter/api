@@ -15,7 +15,7 @@ from rest_framework.views import APIView
 
 from .forms import MessageForm
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code
+from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
@@ -117,6 +117,8 @@ class AirQualityIndexAPI(APIView):
     def handleAQISummaryReport(self, data):
         address = data['queryResult']['parameters']['address']
         geo_location = self.reverseGeocode(address)
+        stations = get_aqi(float(geo_location[0]), float(geo_location[1]))
+        print(stations)
 
         return single_line_message("Hmm! I am learning how to do that. Give me a few days")
 
