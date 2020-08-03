@@ -142,7 +142,7 @@ class AirQualityIndexAPI(APIView):
             self.save_aqi_request_to_log(data, subscription, recommendation, address)
             return get_aqi_response_message(aqi, data)
         if aqi is list:
-            return single_line_message(message="No nearby stations found! ")
+            return single_line_message(message="No nearby stations found!")
         else:
             return single_line_message(message="No nearby stations found! 😶")
 
