@@ -37,7 +37,7 @@ def getNearestAQI(lat, lon):
             lat, lon, float(station["lat"]), float(station["lon"]))
     stations.sort(key=lambda x: (x["distance"]))
 
-    is_station_nearby = stations[0]['distance'] < 30
+    is_station_nearby = stations[0]['distance'] < 100
     if is_station_nearby:
         return stations[0]
     else:
