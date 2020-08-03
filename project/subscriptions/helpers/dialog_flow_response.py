@@ -37,7 +37,7 @@ def prepare_aqi_message_v2(data):
         'image_url': image,
         'map_url': "https://www.google.com/maps/search/?api=1&query={},{}".format(data['lat'], data['lon']),
         'message': [
-            "It is {:.1f} km away from {}".format(data['distance'], data['query']),
+            "It is {:.1f} km away from {}".format(data['distance'], data['street_display_name']),
             "I would say {} ".format(data['message']),
             "Do you want more tips?"
         ]

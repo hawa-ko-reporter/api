@@ -70,8 +70,9 @@ class AirQualityIndexAPI(APIView):
 
         response = requests.get(url, params=data)
         obj = json.loads(response.text)
+        print(obj)
 
-        return obj[0]['lat'], obj[0]['lon']
+        return obj[0]['lat'], obj[0]['lon'], obj[0]['display_name']
 
     def get(self, request):
         return Response(data="return msg or data")
@@ -128,23 +129,21 @@ class AirQualityIndexAPI(APIView):
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
 
-        print(type(aqi))
-        if aqi is object:
+        if aqi:
             aqi['query'] = address
             aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
             recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
             print(aqi['station']['name'])
             subscription = Subscription.objects.get(name=aqi['station']['name'])
 
+            aqi['street_display_name'] = geo_location[2]
             aqi['message'] = recommendation.recommendation_text
             aqi['health'] = health
 
             self.save_aqi_request_to_log(data, subscription, recommendation, address)
             return get_aqi_response_message(aqi, data)
-        if aqi is list:
-            return single_line_message(message="No nearby stations found!")
         else:
-            return single_line_message(message="No nearby stations found! 😶")
+            return single_line_message(message="No nearby stations found! 😶 at {}".format(geo_location[2]))
 
     def handleMaskQuery(self, data):
         address = data['queryResult']['parameters']['address']

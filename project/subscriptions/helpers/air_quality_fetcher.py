@@ -32,16 +32,16 @@ def getNearestAQI(lat, lon):
     print("Found {} stations".format(len(stations)))
 
     for station in stations:
-        print(lat, lon, station["lat"], station["lon"])
         station['distance'] = distance(
             lat, lon, float(station["lat"]), float(station["lon"]))
+        print(lat, lon, station["lat"], station["lon"], station['distance'])
     stations.sort(key=lambda x: (x["distance"]))
 
     is_station_nearby = stations[0]['distance'] < 20
     if is_station_nearby:
         return stations[0]
     else:
-        return stations
+        return {}
 
 
 def get_aqi_code(aqi):
