@@ -128,6 +128,7 @@ class AirQualityIndexAPI(APIView):
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
 
+        print(type(aqi))
         if aqi is object:
             aqi['query'] = address
             aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
