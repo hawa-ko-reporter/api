@@ -44,7 +44,7 @@ class AirQualityIndexAPI(APIView):
         super().__init__(**kwargs)
         self.messages = messages
 
-    def getAQIMessage(self, aqi):
+    def get_aqi_message(self, aqi):
         if aqi <= 50:
             return {"level": "Good", "health": random.choice(self.messages[0]), "caution": ""}
         elif aqi <= 100:
@@ -60,7 +60,8 @@ class AirQualityIndexAPI(APIView):
         else:
             return {}
 
-    def reverseGeocode(self, query):
+    def reverse_geocode(self, query):
+        error = ''
         url = "https://us1.locationiq.com/v1/search.php"
         data = {
             'key': self.geo_token,
@@ -70,9 +71,15 @@ class AirQualityIndexAPI(APIView):
 
         response = requests.get(url, params=data)
         obj = json.loads(response.text)
-        print(obj)
 
-        return obj[0]['lat'], obj[0]['lon'], obj[0]['display_name']
+        try:
+            lat = obj[0]['lat']
+            lon = obj[0]['lon']
+            display_name = obj[0]['display_name']
+            return lat, lon, display_name, error
+        except KeyError:
+            error = 'Reverse geo-coding failed'
+            return 0, 0, '', error
 
     def get(self, request):
         return Response(data="return msg or data")
@@ -117,42 +124,48 @@ class AirQualityIndexAPI(APIView):
 
     def handleAQISummaryReport(self, data):
         address = data['queryResult']['parameters']['address']
-        geo_location = self.reverseGeocode(address)
+        geo_location = self.reverse_geocode(address)
         stations = get_aqi(float(geo_location[0]), float(geo_location[1]))
         print(stations)
 
         return single_line_message("Hmm! I am learning how to do that. Give me a few days")
 
-    def handleAQIRequest(self, data):
+    def handle_aqi_request(self, data):
         address = data['queryResult']['parameters']['address']
-        geo_location = self.reverseGeocode(address)
-        aqi = getNearestAQI(
-            float(geo_location[0]), float(geo_location[1]))
+        lat, lon, display_name, error_text = self.reverse_geocode(address)
+        was_request_success = False
 
-        if aqi:
-            aqi['query'] = address
-            aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
-            recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-            print(aqi['station']['name'])
-            subscription = Subscription.objects.get(name=aqi['station']['name'])
+        if not error_text:
+            aqi = getNearestAQI(
+                float(lat), float(lon))
+            if aqi:
+                aqi['query'] = address
+                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
 
-            aqi['street_display_name'] = geo_location[2]
-            aqi['message'] = recommendation.recommendation_text
-            aqi['health'] = health
+                recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+                subscription = Subscription.objects.get(name=aqi['station']['name'])
 
-            self.save_aqi_request_to_log(data, subscription, recommendation, address)
-            return get_aqi_response_message(aqi, data)
-        else:
-            return single_line_message(message="No nearby stations found! 😶 at {}".format(geo_location[2]))
+                aqi['street_display_name'] = display_name
+                aqi['message'] = recommendation.recommendation_text
+                aqi['health'] = health
+
+                print(aqi['station']['name'])
+
+                self.save_aqi_request_to_log(data, subscription, recommendation, address)
+                was_request_success = True
+                return get_aqi_response_message(aqi, data)
+
+        if not was_request_success:
+            return single_line_message(message="No nearby stations found! 😶 at {}".format(address))
 
     def handleMaskQuery(self, data):
         address = data['queryResult']['parameters']['address']
-        geo_location = self.reverseGeocode(address)
+        geo_location = self.reverse_geocode(address)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
         if aqi:
             aqi['query'] = address
-            aqi['message'] = self.getAQIMessage(float(aqi['aqi']))
+            aqi['message'] = self.get_aqi_message(float(aqi['aqi']))
             return single_line_message(message=aqi['message']['health'])
         else:
             return single_line_message(message="No nearby stations found! 😶")
@@ -179,7 +192,7 @@ class AirQualityIndexAPI(APIView):
     def handleSubscribeRequest(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)
         address = data['queryResult']['parameters']["address"]
-        geo_location = self.reverseGeocode(address)
+        geo_location = self.reverse_geocode(address)
 
         user_lat = geo_location[0]
         user_lon = geo_location[1]
@@ -212,7 +225,7 @@ class AirQualityIndexAPI(APIView):
     def handleAQIMessageRequest(self, data):
         aqi = data['queryResult']["outputContexts"][0]['parameters']['aqi']
 
-        message = self.getAQIMessage(aqi)
+        message = self.get_aqi_message(aqi)
         message = message['health']
         return single_line_message(message)
 
@@ -222,7 +235,7 @@ class AirQualityIndexAPI(APIView):
             intent = data['queryResult']['intent']['displayName']
             print(intent)
             if intent == "request.aqi":
-                message = self.handleAQIRequest(data)
+                message = self.handle_aqi_request(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
             elif intent == "daily.subscribe":
