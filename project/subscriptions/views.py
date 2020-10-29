@@ -160,7 +160,7 @@ class AirQualityIndexAPI(APIView):
                 aqi['health'] = health
 
                 print(aqi['station']['name'])
-                self.save_aqi_request_to_log(data, subscription, recommendation, address)
+                # self.save_aqi_request_to_log(data, subscription, recommendation, address)
                 self.was_request_success = True
                 return get_aqi_response_message(aqi, data)
 
