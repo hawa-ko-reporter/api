@@ -42,6 +42,7 @@ class AirQualityIndexAPI(APIView):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.was_request_success = False
         self.messages = messages
 
     def get_aqi_message(self, aqi):
@@ -108,21 +109,23 @@ class AirQualityIndexAPI(APIView):
         return platform, platform_id, name
 
     def save_aqi_request_to_log(self, data, subscription, recommendation, location_name):
+        try:
+            platform, platform_id, name = self.load_user_data_from_fb(data)
+            user, created = User.objects.get_or_create(
+                platform=platform,
+                platform_id=platform_id,
+                full_name=name
+            )
 
-        platform, platform_id, name = self.load_user_data_from_fb(data)
-        user, created = User.objects.get_or_create(
-            platform=platform,
-            platform_id=platform_id,
-            full_name=name
-        )
+            AQIRecommendations.objects.create(
 
-        AQIRecommendations.objects.create(
-
-            user=user,
-            subscription=subscription,
-            recommendation=recommendation,
-            location_name=location_name
-        )
+                user=user,
+                subscription=subscription,
+                recommendation=recommendation,
+                location_name=location_name
+            )
+        except KeyError:
+            print("Failed to save aqi request logs")
 
     def handleAQISummaryReport(self, data):
         address = data['queryResult']['parameters']['address']
@@ -135,7 +138,7 @@ class AirQualityIndexAPI(APIView):
     def handle_aqi_request(self, data):
         address = data['queryResult']['parameters']['address']
         lat, lon, display_name, error_text = self.reverse_geocode(address)
-        was_request_success = False
+        self.was_request_success = False
 
         if not error_text:
             aqi = getNearestAQI(
@@ -157,15 +160,11 @@ class AirQualityIndexAPI(APIView):
                 aqi['health'] = health
 
                 print(aqi['station']['name'])
-                try:
-                    self.save_aqi_request_to_log(data, subscription, recommendation, address)
-                except KeyError:
-                    print("failed to save logs")
-                    pass
-                was_request_success = True
+                self.save_aqi_request_to_log(data, subscription, recommendation, address)
+                self.was_request_success = True
                 return get_aqi_response_message(aqi, data)
 
-        if not was_request_success:
+        if not self.was_request_success:
             return single_line_message(message="No nearby stations found! 😶 at {}".format(address))
 
     def handleMaskQuery(self, data):
