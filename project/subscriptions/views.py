@@ -66,7 +66,8 @@ class AirQualityIndexAPI(APIView):
         data = {
             'key': self.geo_token,
             'q': query,
-            'format': 'json'
+            'format': 'json',
+            'viewbox': '80.0884245137, 26.3978980576, 88.1748043151, 30.4227169866'
         }
 
         response = requests.get(url, params=data)
@@ -141,9 +142,10 @@ class AirQualityIndexAPI(APIView):
             if aqi:
                 aqi['query'] = address
                 aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
-
+                station_name = aqi['station']['name']
+                print(station_name)
                 recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-                subscription = Subscription.objects.get(name=aqi['station']['name'])
+                subscription = Subscription.objects.get(name=station_name)
 
                 aqi['street_display_name'] = display_name
                 aqi['message'] = recommendation.recommendation_text
