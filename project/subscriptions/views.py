@@ -108,6 +108,7 @@ class AirQualityIndexAPI(APIView):
         return platform, platform_id, name
 
     def save_aqi_request_to_log(self, data, subscription, recommendation, location_name):
+
         platform, platform_id, name = self.load_user_data_from_fb(data)
         user, created = User.objects.get_or_create(
             platform=platform,
@@ -143,7 +144,11 @@ class AirQualityIndexAPI(APIView):
                 aqi['query'] = address
                 aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
                 station_name = aqi['station']['name']
-                print(station_name)
+
+                print("*****")
+                print("Station Name: {} \nAQI: {}".format(station_name, aqi_code))
+                print("*****")
+
                 recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
                 subscription = Subscription.objects.get(name=station_name)
 
@@ -152,8 +157,11 @@ class AirQualityIndexAPI(APIView):
                 aqi['health'] = health
 
                 print(aqi['station']['name'])
-
-                self.save_aqi_request_to_log(data, subscription, recommendation, address)
+                try:
+                    self.save_aqi_request_to_log(data, subscription, recommendation, address)
+                except KeyError:
+                    print("failed to save logs")
+                    pass
                 was_request_success = True
                 return get_aqi_response_message(aqi, data)
 
