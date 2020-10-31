@@ -32,7 +32,7 @@ def get_aqi_message(aqi):
 def prepare_aqi_message_v2(data):
     image, message = get_aqi_message(data['aqi'])
     return {
-        'title': "AQI is at {}".format(data['aqi']),
+        'title': "AQI is at {} in {} station".format(data['aqi'], data['station']['name']),
         'description': "It is considered {} ".format(data['health']),
         'image_url': image,
         'map_url': "https://www.google.com/maps/search/?api=1&query={},{}".format(data['lat'], data['lon']),
@@ -106,6 +106,7 @@ def prepare_subscriptions_message(subscriptions):
 
 def get_aqi_response_message(aqi, data):
     print(aqi['aqi'])
+    print(aqi)
     messages = prepare_aqi_message_v2(aqi)
 
     reply = fb_card_message(title=messages.get('title'), message=messages.get("description"),
