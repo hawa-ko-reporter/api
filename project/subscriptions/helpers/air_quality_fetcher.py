@@ -120,10 +120,11 @@ class AirQualityFetcher:
     def get_by_station_id(self, station_name):
         self.get_aqi()
         stations = self.map_data()
+
         selected_station = None
         for x in stations:
             current_station = x['station']['name']
             if current_station == station_name:
-                selected_station = current_station
-
+                selected_station = x
+                break
         return selected_station
