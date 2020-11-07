@@ -42,6 +42,17 @@ class FacebookMessage:
              access_token),
         )
 
+    def build_card_message(self, user_psid, card):
+        self.message = {
+            "recipient": {"id": user_psid},
+            "message": {"attachment": {
+                "type": "generic",
+                "elements": [
+                    card['fulfillmentMessages'][0]['card']
+                ]
+            }}
+        }
+
     def build_text_message(self, user_psid, message):
         self.message = {
             "recipient": {"id": user_psid},
@@ -50,7 +61,11 @@ class FacebookMessage:
 
         self.message = json.dumps(self.message)
 
-    def send_message(self, user_psid, message):
+    def send_card_message(self, user_psid, card):
+        self.build_card_message(user_psid, card)
+        res = self.deliver_facebook_message()
+        return res
+    def send_text_message(self, user_psid, message):
         self.build_text_message(user_psid, message)
         res = self.deliver_facebook_message()
         return res

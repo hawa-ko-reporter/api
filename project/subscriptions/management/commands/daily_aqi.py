@@ -47,7 +47,7 @@ class Command(BaseCommand):
                 messages = messages + prepare_aqi_message(station)
                 message_to_send = "\n".join(messages)
 
-                res = fb_msg.send_message(platform_id, message_to_send)
+                res = fb_msg.send_text_message(platform_id, message_to_send)
 
                 self.stdout.write(platform_id)
                 print(res)
