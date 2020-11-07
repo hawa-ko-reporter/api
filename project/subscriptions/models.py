@@ -78,8 +78,8 @@ class UserSubscription(DefaultModel):
     subscription_location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
     subscription_location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
     is_archived = models.BooleanField(default=False)
-    start_time = models.DateTimeField(default="2020-11-08T05:00:00+05:45")
-    end_time = models.DateTimeField(default="2020-11-08T11:59:59+05:45")
+    start_time = models.TimeField(default="2020-11-08T05:00:00+05:45")
+    end_time = models.TimeField(default="2020-11-08T11:59:59+05:45")
 
     def __str__(self):
         return self.subscription_user.full_name

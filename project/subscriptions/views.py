@@ -23,6 +23,8 @@ from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
 
 from .helpers.geo import distance
+from django.utils.dateparse import parse_date
+from django.utils.dateparse import parse_datetime
 
 
 # Create your views here.
@@ -206,6 +208,8 @@ class AirQualityIndexAPI(APIView):
         time_period = get_value_from_dialogflow_context(data, DIALOGFLOW_TIME_PERIOD)
         start_time = time_period.get(DIALOGFLOW_TIME_PERIOD_START)
         end_time = time_period.get(DIALOGFLOW_TIME_PERIOD_END)
+        start_time = parse_datetime(start_time).time()
+        end_time = parse_datetime(end_time).time()
         geo_location = self.reverse_geocode(address)
 
         user_lat = geo_location[0]
