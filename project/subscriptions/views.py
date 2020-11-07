@@ -169,7 +169,16 @@ class AirQualityIndexAPI(APIView):
                 return get_aqi_response_message(aqi, data)
 
         if not self.was_request_success:
-            return single_line_message(message="No nearby stations found! 😶 at {}".format(address))
+            fullfillment_text = single_line_message(
+                message="No nearby stations found! 😶 at {}. Try another address ".format(address))
+            fullfillment_text["outputContexts"] = [{
+                "name": "{}/contexts/data-upsell-yes".format(data['session']),
+                "lifespanCount": 1,
+                "parameters": {
+                    "aqi": "no",
+                }
+            }]
+            return fullfillment_text
 
     def handleMaskQuery(self, data):
         address = data['queryResult']['parameters']['address']
@@ -287,7 +296,7 @@ class AirQualityIndexAPI(APIView):
             data = request.data
             intent = data['queryResult']['intent']['displayName']
             print(intent)
-            if intent == "request.aqi":
+            if intent == "request.aqi" or intent == "aqi.location":
                 message = self.handle_aqi_request(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
