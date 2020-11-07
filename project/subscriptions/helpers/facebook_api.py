@@ -34,6 +34,7 @@ class FacebookMessageGenerator:
         reply_payload = {}
         elements = []
         for message in messages:
+
             elements.append({
                 "title": message.get('title'),
                 "image_url": message.get('image_url'),
@@ -58,15 +59,17 @@ class FacebookMessageSender:
         )
         self.message_generator = FacebookMessageGenerator()
 
-    def build_card_message(self, user_psid, card):
+    def build_card_message(self, user_psid, reply_payload):
         self.message = {
             "recipient": {"id": user_psid},
-            "message": {"attachment": {
-                "type": "template",
-                "payload": card['payload']
-            }}
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": reply_payload['payload']}
+            }
         }
-        print(self.message)
+
+        self.message = json.dumps(self.message)
 
     def build_text_message(self, user_psid, message):
         self.message = {
@@ -78,6 +81,7 @@ class FacebookMessageSender:
 
     def send_card_message(self, user_psid, card):
         self.build_card_message(user_psid, self.message_generator.generate_aqi_cards([card]))
+
         res = self.deliver_facebook_message()
         return res
 
@@ -87,6 +91,7 @@ class FacebookMessageSender:
         return res
 
     def deliver_facebook_message(self):
+
         response = requests.post(self.url, headers=self.headers, params=self.params,
                                  data=self.message)
         return response.content, response.status_code

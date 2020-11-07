@@ -53,7 +53,6 @@ class Command(BaseCommand):
 
                 aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
                 recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-                print(aqi)
 
                 aqi['message'] = recommendation.recommendation_text
                 aqi['health'] = health
@@ -65,11 +64,8 @@ class Command(BaseCommand):
                                            )
 
                 messages = prepare_aqi_message_v2(aqi)
-                reply = fb_card_message(title=messages.get('title'), message=messages.get("description"),
-                                        maps_url=messages.get("map_url"), image_url=messages.get("image_url"),
-                                        messages=messages.get("message"))
 
-                res = fb_msg.send_card_message(platform_id, reply)
+                res = fb_msg.send_card_message(platform_id, messages)
                 print(res)
 
         self.stdout.write("It's now %s" % localtime())
