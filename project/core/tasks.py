@@ -10,11 +10,14 @@ def sample_task():
 
 @shared_task
 def send_email_report():
+    print("The report task just ran.")
     # call_command("daily_aqi", )
-    pass
+
+
 
 
 @shared_task
 def send_daily_message():
+    print("The daily message task just ran.")
     # call_command("daily_message", )
-    pass
+

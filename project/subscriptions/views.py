@@ -16,6 +16,8 @@ from rest_framework.views import APIView
 from .forms import MessageForm
 from .helpers.consts import messages
 from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi
+from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
+    DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
@@ -198,6 +200,44 @@ class AirQualityIndexAPI(APIView):
 
         return single_line_message(message="You do not have any subscriptions")
 
+    def daily_subscribe_v2(self, data):
+        platform, platform_id, name = self.load_user_data_from_fb(data)
+        address = get_value_from_dialogflow_context(data, DIALOGFLOW_ADDRESS)
+        time_period = get_value_from_dialogflow_context(data, DIALOGFLOW_TIME_PERIOD)
+        start_time = time_period.get(DIALOGFLOW_TIME_PERIOD_START)
+        end_time = time_period.get(DIALOGFLOW_TIME_PERIOD_END)
+        geo_location = self.reverse_geocode(address)
+
+        user_lat = geo_location[0]
+        user_lon = geo_location[1]
+
+        user, created = User.objects.get_or_create(
+            platform=platform,
+            platform_id=platform_id,
+            full_name=name
+        )
+
+        subscriptions = list(Subscription.objects.all().values())
+        for subs in subscriptions:
+            subs_lat = subs.get("latitude")
+            subs_lon = subs.get("longitude")
+            distance_in_km = distance(subs_lat, subs_lon, user_lat, user_lon)
+            subs['distance'] = distance_in_km
+
+        subscriptions.sort(key=lambda x: (x["distance"]))
+        nearest_station_id = subscriptions[0].get('id')
+
+        UserSubscription.objects.create(
+            subscription_user=user,
+            subscription=Subscription.objects.get(pk=nearest_station_id),
+            subscription_location_name=address,
+            subscription_location_latitude=user_lat,
+            subscription_location_longitude=user_lon,
+            start_time=start_time,
+            end_time=end_time,
+        )
+        return single_line_message("You will now receive daily updates for {} 🎉🎉🎉".format(address))
+
     def handleSubscribeRequest(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)
         address = data['queryResult']['parameters']["address"]
@@ -257,6 +297,8 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleMaskQuery(data)
             elif intent == "aqi.summary.request":
                 message = self.handleAQISummaryReport(data)
+            elif intent == "daily.subscribe - yes":
+                message = self.daily_subscribe_v2(data)
             else:
                 raise Exception("Not supported")
             return Response(data=message)

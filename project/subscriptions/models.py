@@ -40,13 +40,11 @@ class Message(models.Model):
         return self.message
 
 
-class Subscription(models.Model):
+class Subscription(DefaultModel):
     subscription_type = models.ForeignKey(SubscriptionType, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -70,7 +68,7 @@ class User(models.Model):
         return self.full_name
 
 
-class UserSubscription(models.Model):
+class UserSubscription(DefaultModel):
     subscription_user = models.ForeignKey(User, on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
     delivery_frequency = models.IntegerField(choices=DELIVERY_FREQ,
@@ -80,8 +78,8 @@ class UserSubscription(models.Model):
     subscription_location_latitude = models.DecimalField(max_digits=9, decimal_places=6)
     subscription_location_longitude = models.DecimalField(max_digits=9, decimal_places=6)
     is_archived = models.BooleanField(default=False)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
+    start_time = models.DateTimeField(default="2020-11-08T05:00:00+05:45")
+    end_time = models.DateTimeField(default="2020-11-08T11:59:59+05:45")
 
     def __str__(self):
         return self.subscription_user.full_name
@@ -97,7 +95,6 @@ class Recommendation(models.Model):
         return self.recommendation_text
 
 
-
 class FollowUpQuestions(DefaultModel):
     recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
     follow_up = models.TextField()
@@ -107,7 +104,6 @@ class FollowUpQuestions(DefaultModel):
 
 
 class AQIRecommendations(models.Model):
-
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
