@@ -88,9 +88,13 @@ def prepare_aqi_message(data):
     return messages
 
 
+import datetime
+
+
 class AirQualityFetcher:
     url = "https://api.waqi.info/map/bounds/?token={}&latlng=26.3978980576,80.0884245137,30.4227169866,88.1748043151"
     response_text = None
+    last_cache_time = datetime.datetime.now()
 
     def __init__(self, aqi_token):
         self.url = self.url.format(aqi_token)
@@ -103,6 +107,16 @@ class AirQualityFetcher:
     def get_aqi(self):
         response = requests.get(self.url)
         self.response_text = response.text
+        self.last_cache_time = datetime.datetime.now()
+        # time_diff = datetime.datetime.now() - self.last_cache_time
+        # if time_diff.min > datetime.timedelta(30):
+        #     response = requests.get(self.url)
+        #     if response.status_code == 200:
+        #         self.response_text = response.text
+        #         self.last_cache_time = datetime.datetime.now()
+        #     print("Caching AQI at {}".format(datetime.datetime.now()))
+        # else:
+        #     print("AQI was cached {} minutes ago, returning cached value".format(time_diff))
 
     def get_by_distance(self, lat, lon):
         self.get_aqi()

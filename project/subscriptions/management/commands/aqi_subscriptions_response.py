@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
                 ).order_by('-created').count()
 
-                if delivery == 1:
+                if delivery >= 1:
                     continue
 
                 aqi = aqi_fetcher.get_by_station_id(station_name=station_name)
@@ -83,7 +83,7 @@ class Command(BaseCommand):
                     delivery_status_message=response
                 )
 
-                self.stdout.write("Report sent to {} with status code ".format(user_sub.subscription_user,status_code))
+                self.stdout.write("Report sent to {} with status code {} ".format(user_sub.subscription_user,status_code))
 
 
 

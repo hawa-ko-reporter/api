@@ -4,8 +4,8 @@ from django.core.management import call_command
 
 @shared_task
 def sample_task():
-    print("The sample task just ran.")
-    # call_command("daily_aqi", )
+    print("The daily aqi task just ran.")
+    call_command("aqi_subscriptions_response", )
 
 
 @shared_task
