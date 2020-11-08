@@ -117,6 +117,41 @@ def get_aqi_response_message(aqi, data):
     return reply
 
 
+def multiple_stations_report(stations):
+    fulfillment_messages = {}
+    fulfillment_messages["fulfillmentMessages"] = []
+    for station in stations:
+        image_url, message = get_aqi_message(station['aqi'])
+        maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
+        print(station)
+
+        fulfillment_messages['fulfillmentMessages'].append(
+            fb_card(title=station.get('station').get('name'),
+                    image_url=image_url,
+                    maps_url=maps_url,
+                    message=message
+                    ))
+
+    return fulfillment_messages
+
+
+def fb_card(title, message, image_url, maps_url):
+    return {
+        "card": {
+            "title": title,
+            "subtitle": message,
+            "imageUri": image_url,
+            "buttons": [
+                {
+                    "text": "View Station location",
+                    "postback": maps_url
+                },
+            ]
+        },
+        "platform": "FACEBOOK"
+    }
+
+
 def fb_card_message(title, message, image_url, maps_url, messages):
     return {
         "fulfillmentMessages": [

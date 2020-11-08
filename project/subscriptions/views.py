@@ -15,10 +15,11 @@ from rest_framework.views import APIView
 
 from .forms import MessageForm
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi
+from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, AirQualityFetcher
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
-from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
+from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
+    multiple_stations_report
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
 
@@ -34,6 +35,13 @@ from django.utils.dateparse import parse_datetime
 def welcome(request):
     content = {"message": "Welcome to Hawa-ko-reporter API!"}
     return JsonResponse(content)
+
+
+def get_address_from_dialogflow(data):
+    address = data.get('queryResult').get('parameters').get('address')
+    if not address:
+        address = get_value_from_dialogflow_context(data, "address")
+    return address
 
 
 class AirQualityIndexAPI(APIView):
@@ -147,12 +155,49 @@ class AirQualityIndexAPI(APIView):
         else:
             return single_line_message(message="Oh! {}? is that the right address?".format(display_name))
 
+    def handle_aqi_request_v2(self, data):
+        self.was_request_success = False
+        address = get_address_from_dialogflow(data)
+        lat, lon, display_name, error_text = self.reverse_geocode(address)
+        aqi_token = os.environ.get('AQI_TOKEN', '').strip()
+        aqi_fetcher = AirQualityFetcher(aqi_token=aqi_token)
+        fullfillment_text = ""
+        if not error_text:
+            aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=3)
+            print(aqi_results)
+            return multiple_stations_report(aqi_results)
+
+            if len(aqi_results) >= 1:
+                aqi = aqi_results[0]
+                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
+                recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+
+                station_name = aqi['station']['name']
+                aqi['query'] = address
+                aqi['street_display_name'] = display_name
+                aqi['message'] = recommendation.recommendation_text
+                aqi['health'] = health
+
+                fullfillment_text = "ok"
+                self.was_request_success = True
+
+        if not self.was_request_success:
+            fullfillment_text = single_line_message(
+                message="No nearby stations found! 😶 at {}. Try another address ".format(address))
+            fullfillment_text["outputContexts"] = [{
+                "name": "{}/contexts/data-upsell-yes".format(data['session']),
+                "lifespanCount": 1,
+                "parameters": {
+                    "aqi": "no",
+                }
+            }]
+        return fullfillment_text
+
     def handle_aqi_request(self, data):
         address = data.get('queryResult').get('parameters').get('address')
         if not address:
             address = get_value_from_dialogflow_context(data, "address")
         lat, lon, display_name, error_text = self.reverse_geocode(address)
-        self.was_request_success = False
 
         if not error_text:
             aqi = getNearestAQI(
@@ -309,7 +354,7 @@ class AirQualityIndexAPI(APIView):
             if intent == "request.aqi":
                 message = self.confirm_geo_code_location(data)
             elif intent == "request.aqi - address - confirmed" or intent == "aqi.location":
-                message = self.handle_aqi_request(data)
+                message = self.handle_aqi_request_v2(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
             elif intent == "daily.subscribe":
