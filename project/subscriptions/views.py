@@ -19,7 +19,7 @@ from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, A
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
-    multiple_stations_report
+    multiple_stations_report, multiple_stations_slider_report_stations
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
 
@@ -165,7 +165,7 @@ class AirQualityIndexAPI(APIView):
         if not error_text:
             aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=3)
             print(aqi_results)
-            return multiple_stations_report(aqi_results)
+            return multiple_stations_slider_report_stations(aqi_results)
 
             if len(aqi_results) >= 1:
                 aqi = aqi_results[0]

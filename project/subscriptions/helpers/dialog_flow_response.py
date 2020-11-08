@@ -117,6 +117,39 @@ def get_aqi_response_message(aqi, data):
     return reply
 
 
+def multiple_stations_slider_report_stations(stations):
+    fulfillment_messages = {}
+
+    elements = []
+    for station in stations:
+        image_url, message = get_aqi_message(station['aqi'])
+        maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
+        print(station)
+
+        elements.append(
+            fb_template_card(title=station.get('station').get('name'),
+                             image_url=image_url,
+                             maps_url=maps_url,
+                             message=message
+                             ))
+
+    fb_custom_payload = {
+
+        'payload': {
+            'facebook': {
+                'attachment': {'type': 'template', 'payload': {'template_type': 'generic',
+                                                               'elements': elements}}
+            }
+        },
+        'platform': "FACEBOOK"
+
+    }
+
+    fulfillment_messages["fulfillmentMessages"] = [fb_custom_payload]
+    print(fulfillment_messages)
+    return fulfillment_messages
+
+
 def multiple_stations_report(stations):
     fulfillment_messages = {}
     fulfillment_messages["fulfillmentMessages"] = []
@@ -133,6 +166,14 @@ def multiple_stations_report(stations):
                     ))
 
     return fulfillment_messages
+
+
+def fb_template_card(title, message, image_url, maps_url):
+    return {
+        "title": title,
+        "subtitle": message,
+        "image_url": image_url
+    }
 
 
 def fb_card(title, message, image_url, maps_url):
