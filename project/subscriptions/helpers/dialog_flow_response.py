@@ -1,3 +1,6 @@
+from subscriptions.helpers.air_quality_fetcher import get_aqi_code
+
+
 def prepare_aqi_message(data):
     messages = ["The nearest station is {}".format(data['station']['name']),
                 "{:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
@@ -124,10 +127,14 @@ def multiple_stations_slider_report_stations(stations):
     for station in stations:
         image_url, message = get_aqi_message(station['aqi'])
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
-        print(station)
+
+        station_name = station.get('station').get('name')
+        title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
+        aqi_code, health = get_aqi_code(aqi=station['aqi'])
+        message = "This is considered {} ".format(health)
 
         elements.append(
-            fb_template_card(title=station.get('station').get('name'),
+            fb_template_card(title=title,
                              image_url=image_url,
                              maps_url=maps_url,
                              message=message
