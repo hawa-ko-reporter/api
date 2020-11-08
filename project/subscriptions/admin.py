@@ -1,10 +1,20 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import Recommendation, AQIRecommendations, FollowUpQuestions, Subscription, User, UserSubscription
+from .models import Recommendation, AQIRecommendations, FollowUpQuestions, Subscription, User, UserSubscription, \
+    SubscriptionDelivery
+
+
+@admin.register(SubscriptionDelivery)
+class SubscriptionDeliveryAdmin(ImportExportModelAdmin):
+    list_display = ('id','delivery_user', 'delivery_status', 'created', 'updated')
+
+    pass
+
 
 @admin.register(User)
 class UserAdmin(ImportExportModelAdmin):
     pass
+
 
 @admin.register(UserSubscription)
 class UserSubscriptionAdmin(ImportExportModelAdmin):

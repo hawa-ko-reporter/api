@@ -68,6 +68,17 @@ class User(models.Model):
         return self.full_name
 
 
+class SubscriptionDelivery(DefaultModel):
+    delivery_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivery_status = models.IntegerField()
+    delivery_location_name = models.CharField(max_length=200)
+    delivery_aqi = models.IntegerField()
+    delivery_status_message = models.TextField(blank=True)
+
+    def __str__(self):
+        return "{} - {}".format(self.delivery_status, self.delivery_user.full_name)
+
+
 class UserSubscription(DefaultModel):
     subscription_user = models.ForeignKey(User, on_delete=models.CASCADE)
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
