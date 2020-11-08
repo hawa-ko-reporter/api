@@ -230,7 +230,7 @@ class AirQualityIndexAPI(APIView):
                 full_name=name
             )
 
-        return welcome_message(name)
+        return welcome_message(name, user)
 
     def daily_subscribe_v2(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)
