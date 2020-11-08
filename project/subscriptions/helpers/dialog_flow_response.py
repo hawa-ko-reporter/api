@@ -1,7 +1,10 @@
+from django.utils.timezone import localdate
 from subscriptions.helpers.air_quality_fetcher import get_aqi_code
 
 from subscriptions.models import Recommendation
 import random
+
+from subscriptions.models import AQIRequestLog
 
 
 def prepare_aqi_message(data):
@@ -169,7 +172,7 @@ def multiple_stations_slider_report_stations(stations):
     return fulfillment_messages
 
 
-def welcome_message(name):
+def welcome_message(name, user):
     message_without_name = ["Great to see you again {}".format(name)]
     messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
                           "I am able to report air quality information of places in Nepal."
@@ -187,6 +190,19 @@ def welcome_message(name):
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
         fulfillment_messages['fulfillmentMessages'].append(
             fb_quick_replies("🌬️", ["How's the air today?", ]))
+        logs = AQIRequestLog.objects.filter(
+            user=user,
+            created__startswith=str(localdate())
+        ).order_by('-created')[0:2]
+        print(logs)
+
+        previous_locations = ["How's the air today?"]
+        for log in logs:
+            previous_locations.append("aqi at %s" % log.location_name)
+
+        fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
+        fulfillment_messages['fulfillmentMessages'].append(
+            fb_quick_replies("🌬️", previous_locations))
 
     return fulfillment_messages
 

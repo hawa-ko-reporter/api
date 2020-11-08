@@ -21,7 +21,7 @@ from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALO
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
     multiple_stations_report, multiple_stations_slider_report_stations, welcome_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
-from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
+from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
 
 from .helpers.geo import distance
 from django.utils.dateparse import parse_date
@@ -120,7 +120,7 @@ class AirQualityIndexAPI(APIView):
 
         return platform, platform_id, name
 
-    def save_aqi_request_to_log(self, data, subscription, recommendation, location_name):
+    def save_aqi_request_to_log(self, data, location_name):
         try:
             platform, platform_id, name = self.load_user_data_from_fb(data)
             user, created = User.objects.get_or_create(
@@ -129,11 +129,8 @@ class AirQualityIndexAPI(APIView):
                 full_name=name
             )
 
-            AQIRecommendations.objects.create(
-
+            AQIRequestLog.objects.create(
                 user=user,
-                subscription=subscription,
-                recommendation=recommendation,
                 location_name=location_name
             )
         except KeyError:
@@ -167,6 +164,7 @@ class AirQualityIndexAPI(APIView):
 
             if len(aqi_results) >= 1:
                 self.was_request_success = True
+                self.save_aqi_request_to_log(location_name=address, data=data)
                 return multiple_stations_slider_report_stations(aqi_results)
 
         if not self.was_request_success:
@@ -232,7 +230,7 @@ class AirQualityIndexAPI(APIView):
                 full_name=name
             )
 
-        return welcome_message(name)
+        return welcome_message(name, user)
 
     def daily_subscribe_v2(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)

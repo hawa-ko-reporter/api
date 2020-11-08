@@ -114,12 +114,10 @@ class FollowUpQuestions(DefaultModel):
         return self.follow_up
 
 
-class AQIRecommendations(models.Model):
+class AQIRequestLog(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
-    recommendation = models.ForeignKey(Recommendation, on_delete=models.CASCADE)
     location_name = models.CharField(max_length=200, null=True)
 
     def __str__(self):
