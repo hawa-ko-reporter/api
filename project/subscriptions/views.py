@@ -164,22 +164,10 @@ class AirQualityIndexAPI(APIView):
         fullfillment_text = ""
         if not error_text:
             aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=3)
-            print(aqi_results)
-            return multiple_stations_slider_report_stations(aqi_results)
 
             if len(aqi_results) >= 1:
-                aqi = aqi_results[0]
-                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
-                recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-
-                station_name = aqi['station']['name']
-                aqi['query'] = address
-                aqi['street_display_name'] = display_name
-                aqi['message'] = recommendation.recommendation_text
-                aqi['health'] = health
-
-                fullfillment_text = "ok"
                 self.was_request_success = True
+                return multiple_stations_slider_report_stations(aqi_results)
 
         if not self.was_request_success:
             fullfillment_text = single_line_message(
@@ -192,48 +180,6 @@ class AirQualityIndexAPI(APIView):
                 }
             }]
         return fullfillment_text
-
-    def handle_aqi_request(self, data):
-        address = data.get('queryResult').get('parameters').get('address')
-        if not address:
-            address = get_value_from_dialogflow_context(data, "address")
-        lat, lon, display_name, error_text = self.reverse_geocode(address)
-
-        if not error_text:
-            aqi = getNearestAQI(
-                float(lat), float(lon))
-            if aqi:
-                aqi['query'] = address
-                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
-                station_name = aqi['station']['name']
-
-                print("*****")
-                print("Station Name: {} \nAQI: {}".format(station_name, aqi_code))
-                print("*****")
-
-                recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-                subscription = Subscription.objects.get(name=station_name)
-
-                aqi['street_display_name'] = display_name
-                aqi['message'] = recommendation.recommendation_text
-                aqi['health'] = health
-
-                print(aqi['station']['name'])
-                # self.save_aqi_request_to_log(data, subscription, recommendation, address)
-                self.was_request_success = True
-                return get_aqi_response_message(aqi, data)
-
-        if not self.was_request_success:
-            fullfillment_text = single_line_message(
-                message="No nearby stations found! 😶 at {}. Try another address ".format(address))
-            fullfillment_text["outputContexts"] = [{
-                "name": "{}/contexts/data-upsell-yes".format(data['session']),
-                "lifespanCount": 1,
-                "parameters": {
-                    "aqi": "no",
-                }
-            }]
-            return fullfillment_text
 
     def handleMaskQuery(self, data):
         address = data.get('queryResult').get('parameters').get('address')
