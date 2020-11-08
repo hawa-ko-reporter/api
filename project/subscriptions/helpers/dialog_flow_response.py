@@ -1,6 +1,7 @@
 from subscriptions.helpers.air_quality_fetcher import get_aqi_code
 
 from subscriptions.models import Recommendation
+import random
 
 
 def prepare_aqi_message(data):
@@ -164,6 +165,28 @@ def multiple_stations_slider_report_stations(stations):
         fb_text("You know! I can send these to you daily automatically"),
         fb_quick_replies("Choose the option 'send daily' to subscribe",
                          ['Send Daily'])]
+
+    return fulfillment_messages
+
+
+def welcome_message(name):
+    message_without_name = ["Great to see you again {}".format(name)]
+    messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
+                          "I am able to report air quality information of places in Nepal."
+                          "I do this by searching real - time air pollution open data on the web."]
+
+    messages = messages_with_name if name is None else message_without_name
+
+    fulfillment_messages = {"fulfillmentMessages": []}
+    fulfillment_messages['fulfillmentMessages'].append(fb_text(random.choice(messages)), )
+    if name is None:
+        fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
+        fulfillment_messages['fulfillmentMessages'].append(
+            fb_quick_replies("🌬️", ["How's the air today?", "Tell me about masks!", "What is AQI?"]))
+    else:
+        fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
+        fulfillment_messages['fulfillmentMessages'].append(
+            fb_quick_replies("🌬️", ["How's the air today?", ]))
 
     return fulfillment_messages
 
