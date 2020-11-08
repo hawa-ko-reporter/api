@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import Recommendation, AQIRecommendations, FollowUpQuestions, Subscription, User, UserSubscription, \
+from .models import Recommendation, AQIRequestLog, FollowUpQuestions, Subscription, User, UserSubscription, \
     SubscriptionDelivery
 
 
@@ -31,7 +31,7 @@ class RecommendationAdmin(ImportExportModelAdmin):
     pass
 
 
-@admin.register(AQIRecommendations)
+@admin.register(AQIRequestLog)
 class AQIRequestLogAdmin(ImportExportModelAdmin):
     pass
 
