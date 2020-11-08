@@ -1,3 +1,8 @@
+from subscriptions.helpers.air_quality_fetcher import get_aqi_code
+
+from subscriptions.models import Recommendation
+
+
 def prepare_aqi_message(data):
     messages = ["The nearest station is {}".format(data['station']['name']),
                 "{:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
@@ -115,6 +120,118 @@ def get_aqi_response_message(aqi, data):
 
     reply = add_output_context(reply, data=data, aqi=aqi)
     return reply
+
+
+def multiple_stations_slider_report_stations(stations):
+    fulfillment_messages = {}
+    elements = []
+    recommendation = None
+    for station in stations:
+        image_url, message = get_aqi_message(station['aqi'])
+        maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
+
+        station_name = station.get('station').get('name')
+        title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
+        aqi_code, health = get_aqi_code(aqi=station['aqi'])
+        message = "This is considered {} ".format(health)
+
+        elements.append(
+            fb_template_card(title=title,
+                             image_url=image_url,
+                             maps_url=maps_url,
+                             message=message
+                             ))
+        if recommendation is None:
+            recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+            recommendation = "I would say {}".format(recommendation.recommendation_text)
+
+    fb_custom_payload = {
+
+        'payload': {
+            'facebook': {
+                'attachment': {'type': 'template', 'payload': {'template_type': 'generic',
+                                                               'elements': elements}}
+            }
+        },
+        'platform': "FACEBOOK"
+
+    }
+
+    fulfillment_messages["fulfillmentMessages"] = [
+        fb_text("I found these stations nearby "),
+        fb_custom_payload,
+        fb_text(recommendation),
+        fb_text("You know! I can send these to you daily automatically"),
+        fb_quick_replies("Choose the option 'send daily' to subscribe",
+                         ['Send Daily'])]
+
+    return fulfillment_messages
+
+
+def multiple_stations_report(stations):
+    fulfillment_messages = {"fulfillmentMessages": []}
+
+    for station in stations:
+        image_url, message = get_aqi_message(station['aqi'])
+        maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
+        print(station)
+
+        fulfillment_messages['fulfillmentMessages'].append(
+            fb_card(title=station.get('station').get('name'),
+                    image_url=image_url,
+                    maps_url=maps_url,
+                    message=message
+                    ))
+
+    return fulfillment_messages
+
+
+def fb_quick_replies(title, replies):
+    quick_replies = {
+        "quickReplies": {
+            "title": title,
+            'quickReplies': replies
+        },
+        'platform': "FACEBOOK"
+    }
+
+    return quick_replies
+
+
+def fb_text(text):
+    return {
+        "text": {
+            "text": [
+                text
+            ]
+        },
+        "platform": "FACEBOOK"
+    }
+
+
+def fb_template_card(title, message, image_url, maps_url):
+    return {
+        "title": title,
+        "subtitle": message,
+        "image_url": image_url
+    }
+
+
+def fb_card(title, message, image_url, maps_url):
+    return {
+        "card": {
+            "title": title,
+            "subtitle": message,
+            "imageUri": image_url,
+            "buttons": [
+                {
+                    "text": "View Station location",
+                    "postback": maps_url
+                },
+            ]
+        },
+        "platform": "FACEBOOK"
+    }
 
 
 def fb_card_message(title, message, image_url, maps_url, messages):

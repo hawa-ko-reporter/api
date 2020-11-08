@@ -118,18 +118,19 @@ class AirQualityFetcher:
         # else:
         #     print("AQI was cached {} minutes ago, returning cached value".format(time_diff))
 
-    def get_by_distance(self, lat, lon):
+    def get_by_distance(self, lat, lon, results=1):
         self.get_aqi()
         stations = self.map_data()
 
         for subs in stations:
-            subs_lat = subs.get("latitude")
-            subs_lon = subs.get("longitude")
+            subs_lat = subs.get("lat")
+            subs_lon = subs.get("lon")
             distance_in_km = distance(subs_lat, subs_lon, lat, lon)
             subs['distance'] = distance_in_km
 
         stations.sort(key=lambda x: (x["distance"]))
-        return stations[0]
+
+        return stations[0:results]
 
     def get_by_station_id(self, station_name):
         self.get_aqi()

@@ -15,10 +15,11 @@ from rest_framework.views import APIView
 
 from .forms import MessageForm
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi
+from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, AirQualityFetcher
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
-from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message
+from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
+    multiple_stations_report, multiple_stations_slider_report_stations
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRecommendations, Recommendation
 
@@ -34,6 +35,13 @@ from django.utils.dateparse import parse_datetime
 def welcome(request):
     content = {"message": "Welcome to Hawa-ko-reporter API!"}
     return JsonResponse(content)
+
+
+def get_address_from_dialogflow(data):
+    address = data.get('queryResult').get('parameters').get('address')
+    if not address:
+        address = get_value_from_dialogflow_context(data, "address")
+    return address
 
 
 class AirQualityIndexAPI(APIView):
@@ -139,34 +147,27 @@ class AirQualityIndexAPI(APIView):
 
         return single_line_message("Hmm! I am learning how to do that. Give me a few days")
 
-    def handle_aqi_request(self, data):
+    def confirm_geo_code_location(self, data):
         address = data['queryResult']['parameters']['address']
         lat, lon, display_name, error_text = self.reverse_geocode(address)
+        if error_text:
+            return single_line_message(message="Oh! I don't know that address! Say a different address")
+        else:
+            return single_line_message(message="Oh! {}? is that the right address?".format(display_name))
+
+    def handle_aqi_request_v2(self, data):
         self.was_request_success = False
-
+        address = get_address_from_dialogflow(data)
+        lat, lon, display_name, error_text = self.reverse_geocode(address)
+        aqi_token = os.environ.get('AQI_TOKEN', '').strip()
+        aqi_fetcher = AirQualityFetcher(aqi_token=aqi_token)
+        fullfillment_text = ""
         if not error_text:
-            aqi = getNearestAQI(
-                float(lat), float(lon))
-            if aqi:
-                aqi['query'] = address
-                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
-                station_name = aqi['station']['name']
+            aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=3)
 
-                print("*****")
-                print("Station Name: {} \nAQI: {}".format(station_name, aqi_code))
-                print("*****")
-
-                recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-                subscription = Subscription.objects.get(name=station_name)
-
-                aqi['street_display_name'] = display_name
-                aqi['message'] = recommendation.recommendation_text
-                aqi['health'] = health
-
-                print(aqi['station']['name'])
-                # self.save_aqi_request_to_log(data, subscription, recommendation, address)
+            if len(aqi_results) >= 1:
                 self.was_request_success = True
-                return get_aqi_response_message(aqi, data)
+                return multiple_stations_slider_report_stations(aqi_results)
 
         if not self.was_request_success:
             fullfillment_text = single_line_message(
@@ -178,10 +179,10 @@ class AirQualityIndexAPI(APIView):
                     "aqi": "no",
                 }
             }]
-            return fullfillment_text
+        return fullfillment_text
 
     def handleMaskQuery(self, data):
-        address = data['queryResult']['parameters']['address']
+        address = data.get('queryResult').get('parameters').get('address')
         geo_location = self.reverse_geocode(address)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
@@ -296,8 +297,10 @@ class AirQualityIndexAPI(APIView):
             data = request.data
             intent = data['queryResult']['intent']['displayName']
             print(intent)
-            if intent == "request.aqi" or intent == "aqi.location":
-                message = self.handle_aqi_request(data)
+            if intent == "request.aqi":
+                message = self.confirm_geo_code_location(data)
+            elif intent == "request.aqi - address - confirmed" or intent == "aqi.location":
+                message = self.handle_aqi_request_v2(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
             elif intent == "daily.subscribe":
