@@ -139,8 +139,18 @@ class AirQualityIndexAPI(APIView):
 
         return single_line_message("Hmm! I am learning how to do that. Give me a few days")
 
-    def handle_aqi_request(self, data):
+    def confirm_geo_code_location(self, data):
         address = data['queryResult']['parameters']['address']
+        lat, lon, display_name, error_text = self.reverse_geocode(address)
+        if error_text:
+            return single_line_message(message="Oh! I don't know that address! Say a different address")
+        else:
+            return single_line_message(message="Oh! {}? is that the right address?".format(display_name))
+
+    def handle_aqi_request(self, data):
+        address = data.get('queryResult').get('parameters').get('address')
+        if not address:
+            address = get_value_from_dialogflow_context(data, "address")
         lat, lon, display_name, error_text = self.reverse_geocode(address)
         self.was_request_success = False
 
@@ -181,7 +191,7 @@ class AirQualityIndexAPI(APIView):
             return fullfillment_text
 
     def handleMaskQuery(self, data):
-        address = data['queryResult']['parameters']['address']
+        address = data.get('queryResult').get('parameters').get('address')
         geo_location = self.reverse_geocode(address)
         aqi = getNearestAQI(
             float(geo_location[0]), float(geo_location[1]))
@@ -296,7 +306,9 @@ class AirQualityIndexAPI(APIView):
             data = request.data
             intent = data['queryResult']['intent']['displayName']
             print(intent)
-            if intent == "request.aqi" or intent == "aqi.location":
+            if intent == "request.aqi":
+                message = self.confirm_geo_code_location(data)
+            elif intent == "request.aqi - address - confirmed" or intent == "aqi.location":
                 message = self.handle_aqi_request(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
