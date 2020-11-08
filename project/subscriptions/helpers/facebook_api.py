@@ -28,8 +28,24 @@ def handle_fb_name_response(content, default_name):
         return default_name
 
 
-class FacebookMessage:
-    url = "https://graph.facebook.com/v7.0/me/messages"
+class FacebookMessageGenerator:
+    def generate_aqi_cards(self, messages):
+        type = "generic"
+        reply_payload = {}
+        elements = []
+        for message in messages:
+
+            elements.append({
+                "title": message.get('title'),
+                "image_url": message.get('image_url'),
+                "subtitle": message.get('subtitle'),
+            })
+        reply_payload['payload'] = {'template_type': type, "elements": elements}
+        return reply_payload
+
+
+class FacebookMessageSender:
+    url = "https://graph.facebook.com/v8.0/me/messages"
     headers = {
         'Content-Type': 'application/json',
     }
@@ -41,6 +57,19 @@ class FacebookMessage:
             ('access_token',
              access_token),
         )
+        self.message_generator = FacebookMessageGenerator()
+
+    def build_card_message(self, user_psid, reply_payload):
+        self.message = {
+            "recipient": {"id": user_psid},
+            "message": {
+                "attachment": {
+                    "type": "template",
+                    "payload": reply_payload['payload']}
+            }
+        }
+
+        self.message = json.dumps(self.message)
 
     def build_text_message(self, user_psid, message):
         self.message = {
@@ -50,12 +79,19 @@ class FacebookMessage:
 
         self.message = json.dumps(self.message)
 
-    def send_message(self, user_psid, message):
+    def send_card_message(self, user_psid, card):
+        self.build_card_message(user_psid, self.message_generator.generate_aqi_cards([card]))
+
+        res = self.deliver_facebook_message()
+        return res
+
+    def send_text_message(self, user_psid, message):
         self.build_text_message(user_psid, message)
         res = self.deliver_facebook_message()
         return res
 
     def deliver_facebook_message(self):
+
         response = requests.post(self.url, headers=self.headers, params=self.params,
                                  data=self.message)
-        return response.content
+        return response.content, response.status_code

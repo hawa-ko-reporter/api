@@ -121,7 +121,7 @@ CELERY_RESULT_BACKEND = "redis://redis:6379"
 CELERY_BEAT_SCHEDULE = {
     "sample_task": {
         "task": "core.tasks.sample_task",
-        "schedule": crontab(minute="*/1"),
+        "schedule": crontab(minute="*/60"),
     },
     "send_email_report": {
         "task": "core.tasks.send_email_report",

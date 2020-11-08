@@ -61,7 +61,7 @@ class Command(BaseCommand):
 
             message_to_send = "\n".join(messages_to_send)
             print(message_to_send)
-            res = self.fb_msg.send_message(platform_id, message_to_send)
+            res = self.fb_msg.send_text_message(platform_id, message_to_send)
 
             message = {
                 platform_id
