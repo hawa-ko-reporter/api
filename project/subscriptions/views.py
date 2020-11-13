@@ -80,7 +80,8 @@ class AirQualityIndexAPI(APIView):
             'key': self.geo_token,
             'q': query,
             'format': 'json',
-            'viewbox': '80.0884245137, 26.3978980576, 88.1748043151, 30.4227169866'
+            'countrycodes': 'np',
+            'addressdetails': 1
         }
 
         response = requests.get(url, params=data)

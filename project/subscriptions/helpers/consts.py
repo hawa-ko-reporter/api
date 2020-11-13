@@ -1,39 +1,24 @@
 messages = {
     0: [
-        "It’s quite good today. You don’t need to wear a mask for now.",
-        "It’s a perfect day to be outside. No masks needed",
-        "Go for a run today. No masks needed",
-        "If you have a small hill nearby, go for a hike. No mask needed"
+        "You don’t need a mask in terms of the air pollution today. But since we are facing a global pandemic of Covid-19 right now please wear a mask.",
+        "It is actually a perfect day to go on a hike today but since the cases of Covid-19 is increasing rapidly  I would recommend you to stay indoors as much as possible and follow the guidelines of the Ministry of Health and Population. ",
     ],
     1: [
-        "It’s a good day outside.However, if you are allergic to pollution, wear a surgical mask.",
-        "It’s a good day to go for a run, if you are allergic to pollution at least a cloth mask is recommended "
+        "KN95/N95 masks are recommended for protection against the Covid-19. "
+        "It is a good day to go outside and hang out with friends according to the air quality in your locality, but with the current scenario of Covid-19 it is your responsibility to avoid going outside. If you have to go due to any emergencies do not forget your mask. "
     ],
     2: [
-        "It is OK to be outside.",
-        "People with heart or lung disease, older adults, children and teenagers should take more breaks during outdoor activities and should wear an air filter mask like N95.Others can wear a surgical mask.  ",
-        "People with asthma may need to use their inhalers more often. "
-    ],
+        "The cases of Covid-19 has been increasing everyday so the use of a KN95/N95 mask is recommended. ",
+        "The air quality in your locality might affect vulnerable and sensitive groups.void going outside amidst this pandemic of global pandemic and please do follow the local guidelines. "],
     3: [
-        "The air quality is bad outside. ",
-        "People with heart or lung disease, older adults, children and teenagers should avoid outdoor activities. ",
-        "Consider moving activities indoor or rescheduling. ",
-        "Take more breaks during outdoor activities.",
-        "Spend less time near busy roads.",
-            "Wear an air filter mask like N95."
+        "Air quality is poor so people with heart or lung disease, older adults, children, and teenagers should avoid outdoor activities. Consider using a valve mask or N95/KN95 mask for ultimate protection against the pollutants as well as the Covid-19. "
     ],
     4: [
-        "The air quality is very harmful outside.",
-        "People with heart or lung disease, older adults, children and teenagers should avoid outdoor activities. ",
-        "Everyone should consider moving activities indoor or rescheduling. ",
-        "Take more breaks during outdoor activities.",
-        "If it is necessary to go outside, wear an air filter mask like N99."
+        "You should avoid going outside anyways because there is double trouble waiting for you the unhealthy air quality and the risk of acquiring Covid-19. ",
+        "The air quality is very harmful outside. Try not going outside at any costs. Wear a N95/KN95 mask while going outside for protection against air pollutants and corona virus. "
     ],
     5: [
-        "It’s not safe to go outside.",
-        "Everyone should avoid physical activity outdoors.",
-        "Should remain inside and keep the activity levels low.",
-        "If you go outside, you are more likely to be affected by serious health effects. "
+        "Everyone should avoid outdoor exertion because the pollutants are present at harmful levels. You should avoid going outside anyways because of the increasing cases of Covid-19. If you have to go out for an emergency like a medical emergency please wear a N95/KN95 mask. "
 
     ]
 }
