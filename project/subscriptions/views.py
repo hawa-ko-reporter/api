@@ -6,7 +6,8 @@ import traceback
 
 import requests
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
+from django.utils.dateparse import parse_date, parse_datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -14,18 +15,22 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .forms import MessageForm
+from .helpers.air_quality_fetcher import (AirQualityFetcher, get_aqi,
+                                          get_aqi_code, getNearestAQI)
 from .helpers.consts import messages
-from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, AirQualityFetcher
-from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
-    DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
-from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
-    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message
+from .helpers.dialog_flow_parser import (DIALOGFLOW_ADDRESS,
+                                         DIALOGFLOW_TIME_PERIOD,
+                                         DIALOGFLOW_TIME_PERIOD_END,
+                                         DIALOGFLOW_TIME_PERIOD_START,
+                                         get_value_from_dialogflow_context,get_value_from_dialogflow_alt_context)
+from .helpers.dialog_flow_response import (
+    get_aqi_response_message, get_list_subs_response_message,
+    multiple_stations_report, multiple_stations_slider_report_stations,
+    single_line_message, welcome_message,confirm_address)
 from .helpers.facebook_api import get_name, handle_fb_name_response
-from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
-
 from .helpers.geo import distance
-from django.utils.dateparse import parse_date
-from django.utils.dateparse import parse_datetime
+from .models import (AQIRequestLog, Recommendation, Subscription, User,
+                     UserSubscription)
 
 
 # Create your views here.
@@ -236,6 +241,16 @@ class AirQualityIndexAPI(APIView):
     def daily_subscribe_v2(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)
         address = get_value_from_dialogflow_context(data, DIALOGFLOW_ADDRESS)
+        address_alt = get_value_from_dialogflow_alt_context(data, DIALOGFLOW_ADDRESS)
+        print(address,address_alt)
+        if address or address_alt:
+            valid_address = address if address else address_alt
+            return confirm_address(data,valid_address)
+
+        if not address :
+            return single_line_message("Address Needed")
+        else:
+            return single_line_message("Daily subscription to %s.Is that okay?"%address)
         time_period = get_value_from_dialogflow_context(data, DIALOGFLOW_TIME_PERIOD)
         start_time = time_period.get(DIALOGFLOW_TIME_PERIOD_START)
         end_time = time_period.get(DIALOGFLOW_TIME_PERIOD_END)
@@ -324,8 +339,6 @@ class AirQualityIndexAPI(APIView):
                 message = self.handle_aqi_request_v2(data)
             elif intent == "request.aqi-yes":
                 message = self.handleAQIMessageRequest(data)
-            elif intent == "daily.subscribe":
-                message = self.handleSubscribeRequest(data)
             elif intent == "daily.unsubscribe":
                 message = self.handleListSubscriptions(data)
             elif intent == "daily.unsubscribe - yes":
@@ -334,10 +347,10 @@ class AirQualityIndexAPI(APIView):
                 message = self.handleMaskQuery(data)
             elif intent == "aqi.summary.request":
                 message = self.handleAQISummaryReport(data)
-            elif intent == "daily.subscribe - yes":
+            elif intent == "daily.subscribe - yes" or intent == "daily.subscribe":
                 message = self.daily_subscribe_v2(data)
             elif intent == "Default Welcome Intent":
-                message = self.welcome_message(data)
+                message = self.welcome_message(data)  
             else:
                 raise Exception("Not supported")
             return Response(data=message)

@@ -98,6 +98,18 @@ def add_output_context(dialogflow_reply, data, aqi):
     ]
     return dialogflow_reply
 
+def add_output_context_subscribe_address(dialogflow_reply, data, address):
+    dialogflow_reply["outputContexts"] = [
+            {
+                "name": "{}/contexts/dailysubscribe-followup".format(data['session']),
+                "lifespanCount": 1,
+                "parameters": {
+                    "address": address,
+                }
+            }
+        ]
+    return dialogflow_reply
+
 
 def get_list_subs_response_message(subscriptions):
     messages = prepare_subscriptions_message(subscriptions)
@@ -125,6 +137,15 @@ def get_aqi_response_message(aqi, data):
     reply = add_output_context(reply, data=data, aqi=aqi)
     return reply
 
+
+def confirm_address(data,address):
+    fulfillment_messages = {}
+    message_without_name = ["Subscribe to AQI updates to {}?".format(address)]
+    fulfillment_messages = {"fulfillmentMessages": []}
+    fulfillment_messages['fulfillmentMessages'].append(
+            fb_quick_replies(random.choice(message_without_name), ["Yes", "No, I want to change address","Cancel"]))
+    reply = add_output_context_subscribe_address(fulfillment_messages, data=data, address=address)
+    return reply;
 
 def multiple_stations_slider_report_stations(stations):
     fulfillment_messages = {}
