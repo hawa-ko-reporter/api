@@ -130,6 +130,25 @@ def multiple_stations_slider_report_stations(stations):
     fulfillment_messages = {}
     elements = []
     recommendation = None
+
+    aqi_table_url = "https://i.ibb.co/mNF1nB6/aqi-table.png"
+    aqi_table_url = "https://i.ibb.co/bJ0VmZS/aqi-table-v2.png"
+    aqi_table_url = "https://i.ibb.co/M7B518f/aqi-table-v3.png"
+
+    elements.append(
+        fb_template_card(image_url=aqi_table_url, title="Understanding AQI", maps_url="", message="The table "
+                                                                                                  "below "
+                                                                                                  "defines "
+                                                                                                  "the Air "
+                                                                                                  "Quality "
+                                                                                                  "Index "
+                                                                                                  "scale as "
+                                                                                                  "defined "
+                                                                                                  "by the "
+                                                                                                  "US-EPA "
+                                                                                                  "2016 "
+                                                                                                  "standard:"))
+
     for station in stations:
         image_url, message = get_aqi_message(station['aqi'])
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
