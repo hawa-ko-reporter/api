@@ -161,7 +161,7 @@ def multiple_stations_slider_report_stations(stations):
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
 
         full_url = 'https://3955fe4a9643.ngrok.io/aqi/?id={}'.format(station['uid'])
-        full_url = 'https://haxa.naxa.com.np/aqi/?id={}'.format(station['uid'])
+        full_url = 'https://hawa.naxa.com.np/aqi/?id={}'.format(station['uid'])
         print(full_url)
 
         station_name = station.get('station').get('name')

@@ -70,7 +70,7 @@ class Command(BaseCommand):
                 for station in stations:
 
                     image_url, message = get_aqi_message(station['aqi'])
-                    full_url = 'https://haxa.naxa.com.np/aqi/?id={}'.format(station['uid'])
+                    full_url = 'https://hawa.naxa.com.np/aqi/?id={}'.format(station['uid'])
 
 
                     station_name = station.get('station').get('name')
