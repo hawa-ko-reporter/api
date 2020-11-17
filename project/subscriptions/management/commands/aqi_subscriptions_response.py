@@ -25,6 +25,10 @@ from subscriptions.models import Recommendation, SubscriptionDelivery
 
 from subscriptions.helpers.geo import distance
 
+from subscriptions.helpers.dialog_flow_response import get_aqi_message, fb_template_card
+
+from subscriptions.helpers.dialog_flow_response import fb_text
+
 
 class Command(BaseCommand):
     help = "Send Today's AQI to subscribers"
@@ -53,37 +57,60 @@ class Command(BaseCommand):
                 if delivery >= 1:
                     continue
 
-                aqi = aqi_fetcher.get_by_station_id(station_name=station_name)
-                if not aqi:
-                    self.stdout.write("Selected station not offline -- pull data from another station")
-                    aqi = aqi_fetcher.get_by_distance(lat=user_sub.subscription.latitude,
-                                                      lon=user_sub.subscription.longitude)
+                # aqi = aqi_fetcher.get_by_station_id(station_name=station_name)
+                self.stdout.write("Selected station offline -- pull data from another station")
+                stations = aqi_fetcher.get_by_distance(lat=user_sub.subscription.latitude,
+                                                      lon=user_sub.subscription.longitude,results=3)
 
-                aqi_code, health = get_aqi_code(aqi=aqi['aqi'])
+                aqi_code, health = get_aqi_code(aqi=stations[0]['aqi'])
                 recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
+                print(recommendation)
 
-                aqi['message'] = recommendation.recommendation_text
-                aqi['health'] = health
-                aqi['street_display_name'] = user_sub.subscription_location_name
-                aqi['distance'] = distance(user_sub.subscription_location_latitude,
-                                           user_sub.subscription_location_longitude,
-                                           aqi.get('lat'),
-                                           aqi.get('lon')
-                                           )
+                elements = []
+                for station in stations:
 
-                messages = prepare_aqi_message_v2(aqi)
+                    image_url, message = get_aqi_message(station['aqi'])
+                    full_url = 'https://haxa.naxa.com.np/aqi/?id={}'.format(station['uid'])
+                    print(full_url)
 
-                response, status_code = fb_msg.send_card_message(platform_id, messages)
+                    station_name = station.get('station').get('name')
+                    title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
+                    aqi_code, health = get_aqi_code(aqi=station['aqi'])
+                    message = "This is considered {} ".format(health)
 
+                    elements.append(
+                        fb_template_card(title=title,
+                                         image_url=image_url,
+                                         maps_url=full_url,
+                                         message=message
+                                         ))
+                    if recommendation is None:
+                        recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by(
+                            '?').first()
+                        recommendation = "I would say {}".format(recommendation.recommendation_text)
+
+                fb_custom_payload = {
+
+                    'payload': {
+                        'facebook': {
+                            'attachment': {'type': 'template', 'payload': {'template_type': 'generic',
+                                                                           'elements': elements}}
+                        }
+                    },
+                    'platform': "FACEBOOK"
+                }
+
+                response, status_code = fb_msg.send_card_message(platform_id, fb_custom_payload['payload']['facebook']['attachment'])
+                fb_msg.send_text_message(platform_id,"*Your daily report for {} has arrived*".format(user_sub.subscription_location_name))
                 SubscriptionDelivery.objects.create(
                     delivery_user=user_sub.subscription_user,
                     delivery_status=status_code,
-                    delivery_location_name=aqi['station']['name'],
-                    delivery_aqi=aqi['aqi'],
+                    delivery_location_name=stations[0]['station']['name'],
+                    delivery_aqi=stations[0]['aqi'],
                     delivery_status_message=response
                 )
 
-                self.stdout.write("Report sent to {} with status code {} ".format(user_sub.subscription_user,status_code))
+                self.stdout.write("Report sent to {} with status code {} ".format(user_sub.subscription_user,status_code,response))
 
 
 

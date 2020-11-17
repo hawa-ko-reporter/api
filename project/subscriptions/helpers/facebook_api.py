@@ -34,7 +34,7 @@ class FacebookMessageGenerator:
         reply_payload = {}
         elements = []
         for message in messages:
-
+            print(message)
             elements.append({
                 "title": message.get('title'),
                 "image_url": message.get('image_url'),
@@ -59,6 +59,19 @@ class FacebookMessageSender:
         )
         self.message_generator = FacebookMessageGenerator()
 
+    def build_text_message(self, user_psid, message):
+        self.message = {
+            "recipient": {"id": user_psid},
+            "message": {"text": message}
+        }
+
+        self.message = json.dumps(self.message)
+
+    def send_text_message(self, user_psid, message):
+        self.build_text_message(user_psid, message)
+        res = self.deliver_facebook_message()
+        return res
+
     def build_card_message(self, user_psid, reply_payload):
         self.message = {
             "recipient": {"id": user_psid},
@@ -70,25 +83,16 @@ class FacebookMessageSender:
         }
 
         self.message = json.dumps(self.message)
+        print(self.message)
 
-    def build_text_message(self, user_psid, message):
-        self.message = {
-            "recipient": {"id": user_psid},
-            "message": {"text": message}
-        }
 
-        self.message = json.dumps(self.message)
-
-    def send_card_message(self, user_psid, card):
-        self.build_card_message(user_psid, self.message_generator.generate_aqi_cards([card]))
+    def send_card_message(self, user_psid, messages):
+        self.build_card_message(user_psid, messages)
 
         res = self.deliver_facebook_message()
         return res
 
-    def send_text_message(self, user_psid, message):
-        self.build_text_message(user_psid, message)
-        res = self.deliver_facebook_message()
-        return res
+
 
     def deliver_facebook_message(self):
 
