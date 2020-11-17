@@ -209,48 +209,50 @@ def confirm_geo_code_location(display_name):
 
 
 def welcome_message(name, user):
-    message_without_name = ["Great to see you again {}".format(name),"Hello{}! Hope you are staying safe in this pandemic.".format(name)]
+    message_without_name = ["Great to see you again {}".format(name),
+                            "Hello {}! Hope you are staying safe in this pandemic.".format(name)]
     messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
                           "I am able to report air quality information of places in Nepal."
                           "I do this by searching real - time air pollution open data on the web.",
+
                           "Namaste! {} I am Hawa ko Reporter the coolest chat bot here to "
                           "let you know about things associated with air quality. "
                           "I am in your service to fulfill your queries. "
                           "Please choose what would you like to know about".format(name),
+
                           "Hey {}! nice to connect with you. I am Hawa ko Reporter"
                           " a chat-bot designed to clear people’s confusion primarily about "
                           "the air quality and factors associated with it. "
                           "Please select what you are interested in knowing about".format(name),
-                          "Hello (user name)! Hope you are staying safe in this pandemic. "
+                          "Hello {}! Hope you are staying safe in this pandemic. "
                           "Btw I am Hawa ko Reporter a chat-bot. I have been assigned to "
                           "help you to know about the air quality. What information would you like to et from me?".format(name)
                           ]
 
-    messages = messages_with_name if name is None else message_without_name
+    messages = message_without_name if name is None else messages_with_name
 
     fulfillment_messages = {"fulfillmentMessages": []}
     fulfillment_messages['fulfillmentMessages'].append(fb_text(random.choice(messages)), )
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("🌬️", ["How's the air today?", "Tell me about masks!", "What is AQI?"]))
+            fb_quick_replies("👋", ["Air quality near me", "Tell me about masks!", "What is AQI?"]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
-        fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("🌬️", ["How's the air today?", ]))
+
         logs = AQIRequestLog.objects.filter(
             user=user,
             created__startswith=str(localdate())
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["How's the air today?"]
+        previous_locations = ["Air quality near me","Tell me about masks!", "What is AQI?"]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("🌬️", previous_locations))
+            fb_quick_replies("👋", previous_locations))
 
     return fulfillment_messages
 
