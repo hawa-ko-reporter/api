@@ -19,7 +19,7 @@ from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, A
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
-    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message
+    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message, confirm_geo_code_location
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
 
@@ -151,7 +151,8 @@ class AirQualityIndexAPI(APIView):
         if error_text:
             return single_line_message(message="Oh! I don't know that address! Say a different address")
         else:
-            return single_line_message(message="Oh! {}? is that the right address?".format(display_name))
+            return confirm_geo_code_location(display_name=display_name)
+
 
     def handle_aqi_request_v2(self, data):
         self.was_request_success = False

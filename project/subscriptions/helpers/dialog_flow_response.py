@@ -198,6 +198,15 @@ def multiple_stations_slider_report_stations(stations):
     return fulfillment_messages
 
 
+def confirm_geo_code_location(display_name):
+    fulfillment_messages = {"fulfillmentMessages": []}
+
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*?".format(display_name)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the right address?"))
+    fulfillment_messages['fulfillmentMessages'].append(
+        fb_quick_replies("Choose a option or reply:", ["Cancel","Yes","No"]))
+    return fulfillment_messages
+
 def welcome_message(name, user):
     message_without_name = ["Great to see you again {}".format(name)]
     messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
