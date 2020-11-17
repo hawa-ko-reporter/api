@@ -7,7 +7,6 @@ import random
 from subscriptions.models import AQIRequestLog
 
 
-
 def prepare_aqi_message(data):
     messages = ["The nearest station is {}".format(data['station']['name']),
                 "{:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
@@ -137,18 +136,19 @@ def multiple_stations_slider_report_stations(stations):
     aqi_table_url = "https://i.ibb.co/M7B518f/aqi-table-v3.png"
 
     elements.append(
-        fb_template_card(image_url=aqi_table_url, title="Understanding AQI", maps_url=aqi_table_url, message="The table "
-                                                                                                  "below "
-                                                                                                  "defines "
-                                                                                                  "the Air "
-                                                                                                  "Quality "
-                                                                                                  "Index "
-                                                                                                  "scale as "
-                                                                                                  "defined "
-                                                                                                  "by the "
-                                                                                                  "US-EPA "
-                                                                                                  "2016 "
-                                                                                                  "standard:"))
+        fb_template_card(image_url=aqi_table_url, title="Understanding AQI", maps_url=aqi_table_url,
+                         message="The table "
+                                 "below "
+                                 "defines "
+                                 "the Air "
+                                 "Quality "
+                                 "Index "
+                                 "scale as "
+                                 "defined "
+                                 "by the "
+                                 "US-EPA "
+                                 "2016 "
+                                 "standard:"))
 
     for station in stations:
 
@@ -204,14 +204,27 @@ def confirm_geo_code_location(display_name):
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*?".format(display_name)))
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the right address?"))
     fulfillment_messages['fulfillmentMessages'].append(
-        fb_quick_replies("Choose a option or reply:", ["Cancel","Yes","No"]))
+        fb_quick_replies("Choose a option or reply:", ["Cancel", "Yes", "No"]))
     return fulfillment_messages
 
+
 def welcome_message(name, user):
-    message_without_name = ["Great to see you again {}".format(name)]
+    message_without_name = ["Great to see you again {}".format(name),"Hello{}! Hope you are staying safe in this pandemic.".format(name)]
     messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
                           "I am able to report air quality information of places in Nepal."
-                          "I do this by searching real - time air pollution open data on the web."]
+                          "I do this by searching real - time air pollution open data on the web.",
+                          "Namaste! {} I am Hawa ko Reporter the coolest chat bot here to "
+                          "let you know about things associated with air quality. "
+                          "I am in your service to fulfill your queries. "
+                          "Please choose what would you like to know about".format(name),
+                          "Hey {}! nice to connect with you. I am Hawa ko Reporter"
+                          " a chat-bot designed to clear people’s confusion primarily about "
+                          "the air quality and factors associated with it. "
+                          "Please select what you are interested in knowing about".format(name),
+                          "Hello (user name)! Hope you are staying safe in this pandemic. "
+                          "Btw I am Hawa ko Reporter a chat-bot. I have been assigned to "
+                          "help you to know about the air quality. What information would you like to et from me?".format(name)
+                          ]
 
     messages = messages_with_name if name is None else message_without_name
 
@@ -296,10 +309,10 @@ def fb_template_card(title, message, image_url, maps_url):
         "title": title,
         "subtitle": message,
         "image_url": image_url,
-        "default_action":{
-            "type":"web_url",
-            "url":maps_url,
-            "webview_height_ratio":"COMPACT"
+        "default_action": {
+            "type": "web_url",
+            "url": maps_url,
+            "webview_height_ratio": "COMPACT"
         },
         "buttons": [fb_template_button("View Details", maps_url)]
     }
