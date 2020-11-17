@@ -87,7 +87,8 @@ class Command(BaseCommand):
                     if recommendation is None:
                         recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by(
                             '?').first()
-                        recommendation = "I would say {}".format(recommendation.recommendation_text)
+                        if recommendation is not None:
+                            recommendation = "I would say {}".format(recommendation.recommendation_text)
 
                 fb_custom_payload = {
 
