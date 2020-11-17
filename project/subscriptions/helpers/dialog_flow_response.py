@@ -18,10 +18,16 @@ def prepare_aqi_message(data):
 
 def get_aqi_message(aqi):
     size = "500x300"
-    aqi = int(aqi)
-
     image = None
     message = None
+
+    try:
+        aqi = int(aqi)
+    except ValueError:
+        image = "https://dummyimage.com/{}/ffffff/000000.png&text={}".format(size, "-")
+        return image,message
+
+
     if aqi <= 50:
         image = "https://dummyimage.com/{}/00e400/000000.png&text={}".format(size, aqi)
     elif aqi <= 100:
@@ -162,13 +168,15 @@ def multiple_stations_slider_report_stations(stations):
 
         full_url = 'https://3955fe4a9643.ngrok.io/aqi/?id={}'.format(station['uid'])
         full_url = 'https://hawa.naxa.com.np/aqi/?id={}'.format(station['uid'])
-        print(full_url)
+
 
         station_name = station.get('station').get('name')
         title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
         aqi_code, health = get_aqi_code(aqi=station['aqi'])
-        message = "This is considered {} ".format(health)
-
+        if aqi_code != -1:
+            message = "This is considered {} ".format(health)
+        else:
+            message = health
         elements.append(
             fb_template_card(title=title,
                              image_url=image_url,
@@ -177,7 +185,9 @@ def multiple_stations_slider_report_stations(stations):
                              ))
         if recommendation is None:
             recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-            recommendation = "I would say {}".format(recommendation.recommendation_text)
+
+            if recommendation is not None:
+                recommendation = "I would say {}".format(recommendation.recommendation_text)
 
     fb_custom_payload = {
 

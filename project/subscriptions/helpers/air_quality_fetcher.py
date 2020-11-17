@@ -45,7 +45,11 @@ def getNearestAQI(lat, lon):
 
 
 def get_aqi_code(aqi):
-    aqi = int(aqi)
+    try:
+        aqi = int(aqi)
+    except ValueError:
+        return -1,"Not Available"
+
     if aqi <= 50:
         message = 0.0, "Good"
     elif aqi <= 100:
