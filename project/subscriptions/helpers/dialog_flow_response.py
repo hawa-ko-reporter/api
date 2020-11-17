@@ -188,6 +188,7 @@ def multiple_stations_slider_report_stations(stations):
 
     fulfillment_messages["fulfillmentMessages"] = [
         fb_text("I found these stations nearby "),
+        fb_text("Swipe right ➡➡️️"),
         fb_custom_payload,
         fb_text(recommendation),
         fb_text("You know! I can send these to you daily automatically"),
@@ -286,6 +287,11 @@ def fb_template_card(title, message, image_url, maps_url):
         "title": title,
         "subtitle": message,
         "image_url": image_url,
+        "default_action":{
+            "type":"web_url",
+            "url":maps_url,
+            "webview_height_ratio":"COMPACT"
+        },
         "buttons": [fb_template_button("View Details", maps_url)]
     }
 
