@@ -59,19 +59,19 @@ class Command(BaseCommand):
 
                 # aqi = aqi_fetcher.get_by_station_id(station_name=station_name)
                 self.stdout.write("Selected station offline -- pull data from another station")
-                stations = aqi_fetcher.get_by_distance(lat=user_sub.subscription.latitude,
-                                                      lon=user_sub.subscription.longitude,results=3)
+                stations = aqi_fetcher.get_by_distance(lat=user_sub.subscription_location_latitude,
+                                                      lon=user_sub.subscription_location_longitude,results=3)
 
                 aqi_code, health = get_aqi_code(aqi=stations[0]['aqi'])
                 recommendation = Recommendation.objects.filter(recommendation_category=aqi_code).order_by('?').first()
-                print(recommendation)
+
 
                 elements = []
                 for station in stations:
 
                     image_url, message = get_aqi_message(station['aqi'])
                     full_url = 'https://haxa.naxa.com.np/aqi/?id={}'.format(station['uid'])
-                    print(full_url)
+
 
                     station_name = station.get('station').get('name')
                     title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
@@ -101,7 +101,7 @@ class Command(BaseCommand):
                 }
 
                 response, status_code = fb_msg.send_card_message(platform_id, fb_custom_payload['payload']['facebook']['attachment'])
-                fb_msg.send_text_message(platform_id,"*Your daily report for {} has arrived*".format(user_sub.subscription_location_name))
+                fb_msg.send_text_message(platform_id,"Your daily report for *{}* has arrived".format(user_sub.subscription_location_name))
                 SubscriptionDelivery.objects.create(
                     delivery_user=user_sub.subscription_user,
                     delivery_status=status_code,
