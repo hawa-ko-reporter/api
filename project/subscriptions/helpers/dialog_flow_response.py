@@ -126,6 +126,11 @@ def get_aqi_response_message(aqi, data):
     return reply
 
 
+def generate_random_queries(sample_size):
+    queries = ['best mask air pollution', 'is cloth mask good?', 'KN95 vs N95 mask', 'is value mask good?']
+    return random.sample(queries, sample_size)
+
+
 def multiple_stations_slider_report_stations(stations):
     fulfillment_messages = {}
     elements = []
@@ -186,6 +191,8 @@ def multiple_stations_slider_report_stations(stations):
 
     }
 
+    quick_replies = ['Send Daily']
+    quick_replies.append(generate_random_queries(2))
     fulfillment_messages["fulfillmentMessages"] = [
         fb_text("I found these stations nearby "),
         fb_text("Swipe right ➡➡️️"),
@@ -193,7 +200,7 @@ def multiple_stations_slider_report_stations(stations):
         fb_text(recommendation),
         fb_text("You know! I can send these to you daily automatically"),
         fb_quick_replies("Choose the option 'send daily' to subscribe",
-                         ['Send Daily'])]
+                         quick_replies)]
 
     return fulfillment_messages
 
@@ -226,7 +233,8 @@ def welcome_message(name, user):
                           "Please select what you are interested in knowing about".format(name),
                           "Hello {}! Hope you are staying safe in this pandemic. "
                           "Btw I am Hawa ko Reporter a chat-bot. I have been assigned to "
-                          "help you to know about the air quality. What information would you like to et from me?".format(name)
+                          "help you to know about the air quality. What information would you like to et from me?".format(
+                              name)
                           ]
 
     messages = message_without_name if name is None else messages_with_name
@@ -236,7 +244,7 @@ def welcome_message(name, user):
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("👋", ["Air quality near me", "Tell me about masks!", "What is AQI?"]))
+            fb_quick_replies("👋", ["Air quality near me",  "What is AQI?",generate_random_queries(1)]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
 
@@ -246,7 +254,7 @@ def welcome_message(name, user):
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["Air quality near me","Tell me about masks!", "What is AQI?"]
+        previous_locations = ["Air quality near me", "What is AQI?",generate_random_queries(1)]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 
