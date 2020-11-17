@@ -346,6 +346,13 @@ class AirQualityIndexAPI(APIView):
             return Response(data=single_line_message("No data avaliable"))
 
 
+def aqi_detail(request):
+    if request.method == "GET":
+        station_id = request.GET.get('id','')
+        args = {}
+        args['station_id'] = station_id
+        return render(request, 'subscriptions/aqi-detail.html',args)
+
 def message_new(request):
     if request.method == "POST":
         form = MessageForm(request.POST)

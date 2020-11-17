@@ -7,6 +7,7 @@ import random
 from subscriptions.models import AQIRequestLog
 
 
+
 def prepare_aqi_message(data):
     messages = ["The nearest station is {}".format(data['station']['name']),
                 "{:.1f} km away".format(data['distance']), "The AQI is {} at {}".format(
@@ -136,7 +137,7 @@ def multiple_stations_slider_report_stations(stations):
     aqi_table_url = "https://i.ibb.co/M7B518f/aqi-table-v3.png"
 
     elements.append(
-        fb_template_card(image_url=aqi_table_url, title="Understanding AQI", maps_url="", message="The table "
+        fb_template_card(image_url=aqi_table_url, title="Understanding AQI", maps_url=aqi_table_url, message="The table "
                                                                                                   "below "
                                                                                                   "defines "
                                                                                                   "the Air "
@@ -150,8 +151,13 @@ def multiple_stations_slider_report_stations(stations):
                                                                                                   "standard:"))
 
     for station in stations:
+
         image_url, message = get_aqi_message(station['aqi'])
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
+
+        full_url = 'https://3955fe4a9643.ngrok.io/aqi/?id={}'.format(station['uid'])
+        full_url = 'https://haxa.naxa.com.np/aqi/?id={}'.format(station['uid'])
+        print(full_url)
 
         station_name = station.get('station').get('name')
         title = "{} ({:.1f} KM away)".format(station_name, station['distance'])
@@ -161,7 +167,7 @@ def multiple_stations_slider_report_stations(stations):
         elements.append(
             fb_template_card(title=title,
                              image_url=image_url,
-                             maps_url=maps_url,
+                             maps_url=full_url,
                              message=message
                              ))
         if recommendation is None:
@@ -267,11 +273,20 @@ def fb_text(text):
     }
 
 
+def fb_template_button(title, url):
+    return {
+        "type": "web_url",
+        "url": url,
+        "title": title
+    }
+
+
 def fb_template_card(title, message, image_url, maps_url):
     return {
         "title": title,
         "subtitle": message,
-        "image_url": image_url
+        "image_url": image_url,
+        "buttons": [fb_template_button("View Details", maps_url)]
     }
 
 
