@@ -127,8 +127,8 @@ def get_aqi_response_message(aqi, data):
 
 
 def generate_random_queries(sample_size):
-    queries = ['best mask air pollution', 'is cloth mask good?', 'KN95 vs N95 mask', 'is value mask good?']
-    return random.sample(queries, sample_size)
+    queries = ['best mask pollution', 'is cloth mask good?', 'KN95 vs N95 mask', 'is value mask good?']
+    return random.choice(queries)
 
 
 def multiple_stations_slider_report_stations(stations):
@@ -192,7 +192,9 @@ def multiple_stations_slider_report_stations(stations):
     }
 
     quick_replies = ['Send Daily']
-    quick_replies.append(generate_random_queries(2))
+    queries = generate_random_queries(1)
+    print(queries)
+    quick_replies.append(queries)
     fulfillment_messages["fulfillmentMessages"] = [
         fb_text("I found these stations nearby "),
         fb_text("Swipe right ➡➡️️"),
@@ -200,7 +202,8 @@ def multiple_stations_slider_report_stations(stations):
         fb_text(recommendation),
         fb_text("You know! I can send these to you daily automatically"),
         fb_quick_replies("Choose the option 'send daily' to subscribe",
-                         quick_replies)]
+                         quick_replies)
+                         ]
 
     return fulfillment_messages
 
