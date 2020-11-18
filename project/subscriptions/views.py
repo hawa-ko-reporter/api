@@ -90,11 +90,34 @@ class AirQualityIndexAPI(APIView):
         try:
             lat = obj[0]['lat']
             lon = obj[0]['lon']
-            display_name = obj[0]['display_name']
+            display_name = self.get_display_name(obj[0])
             return lat, lon, display_name, error
         except KeyError:
             error = 'Reverse geo-coding failed'
             return 0, 0, '', error
+
+    def get_display_name(self, geocode_result):
+        names = []
+        address = geocode_result.get("address")
+        display_name = geocode_result.get('display_name')
+
+        # find address
+        locality = address.get('locality')
+        if locality is not None:
+            names.append(locality)
+
+        # find city
+        city = address.get('town')
+        if city is None:
+            city = address.get('city')
+        if city is not None:
+            names.append(city)
+
+        if len(names) > 0:
+
+            return ",".join(names)
+        else:
+            return display_name
 
     def get(self, request):
         return Response(data="return msg or data")
@@ -152,7 +175,6 @@ class AirQualityIndexAPI(APIView):
             return single_line_message(message="Oh! I don't know that address! Say a different address")
         else:
             return confirm_geo_code_location(display_name=display_name)
-
 
     def handle_aqi_request_v2(self, data):
         self.was_request_success = False
@@ -349,10 +371,11 @@ class AirQualityIndexAPI(APIView):
 
 def aqi_detail(request):
     if request.method == "GET":
-        station_id = request.GET.get('id','')
+        station_id = request.GET.get('id', '')
         args = {}
         args['station_id'] = station_id
-        return render(request, 'subscriptions/aqi-detail.html',args)
+        return render(request, 'subscriptions/aqi-detail.html', args)
+
 
 def message_new(request):
     if request.method == "POST":
