@@ -231,6 +231,7 @@ def confirm_geo_code_location(display_name):
 def welcome_message(name, user):
     message_without_name = ["Great to see you again {}".format(name),
                             "Hello {}! Hope you are staying safe in this pandemic.".format(name)]
+
     messages_with_name = ["Hey, I am hawa-ko-reporter, Nice to meet you."
                           "I am able to report air quality information of places in Nepal."
                           "I do this by searching real - time air pollution open data on the web.",
@@ -250,7 +251,7 @@ def welcome_message(name, user):
                               name)
                           ]
 
-    messages = message_without_name if name is None else messages_with_name
+    messages = messages_with_name if name is None else message_without_name
 
     fulfillment_messages = {"fulfillmentMessages": []}
     fulfillment_messages['fulfillmentMessages'].append(fb_text(random.choice(messages)), )
