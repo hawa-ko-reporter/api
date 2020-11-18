@@ -185,7 +185,8 @@ class AirQualityIndexAPI(APIView):
         fullfillment_text = ""
         if not error_text:
             aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=10)
-
+            print(aqi_results)
+            print(len(aqi_results))
             if len(aqi_results) >= 1:
                 self.was_request_success = True
                 self.save_aqi_request_to_log(location_name=address, data=data)
