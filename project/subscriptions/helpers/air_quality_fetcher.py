@@ -124,7 +124,7 @@ class AirQualityFetcher:
         # else:
         #     print("AQI was cached {} minutes ago, returning cached value".format(time_diff))
 
-    def get_by_distance(self, lat, lon, results=10):
+    def get_by_distance(self, lat, lon, results=1):
         self.get_aqi()
         stations = self.map_data()
 
