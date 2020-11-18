@@ -48,7 +48,7 @@ def get_aqi_code(aqi):
     try:
         aqi = int(aqi)
     except ValueError:
-        return -1,"Not Available"
+        return -1,"Update not available"
 
     if aqi <= 50:
         message = 0.0, "Good"
@@ -136,7 +136,8 @@ class AirQualityFetcher:
 
         stations.sort(key=lambda x: (x["distance"]))
 
-        return stations[0:results]
+        results_length = len(stations) if len(stations) > results else results
+        return stations[0:results_length]
 
     def get_by_station_id(self, station_name):
         self.get_aqi()
