@@ -184,7 +184,7 @@ class AirQualityIndexAPI(APIView):
         aqi_fetcher = AirQualityFetcher(aqi_token=aqi_token)
         fullfillment_text = ""
         if not error_text:
-            aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=10)
+            aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=5)
             print(aqi_results)
             print(len(aqi_results))
             if len(aqi_results) >= 1:

@@ -171,7 +171,7 @@ def multiple_stations_slider_report_stations(stations):
 
 
         station_name = station.get('station').get('name')
-        title = "{} Approx. ({:.1f} KM away)".format(station_name, station['distance'])
+        title = "{} (Approx. {:.1f} KM away)".format(station_name, station['distance'])
         aqi_code, health = get_aqi_code(aqi=station['aqi'])
         if aqi_code != -1:
             message = "This is considered {} ".format(health)
