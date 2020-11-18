@@ -218,6 +218,15 @@ def multiple_stations_slider_report_stations(stations):
     return fulfillment_messages
 
 
+def geocode_failure_reply():
+    fulfillment_messages = {"fulfillmentMessages": []}
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! I don't know that address!"))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Say a different address"))
+    fulfillment_messages['fulfillmentMessages'].append(
+        fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara","AQI at Dharan"]))
+
+    return fulfillment_messages
+
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
 
