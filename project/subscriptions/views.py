@@ -19,7 +19,7 @@ from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, A
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
-    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message, confirm_geo_code_location,geocode_failure_reply
+    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message, confirm_geo_code_location,geocode_failure_reply,subscription_success_message
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
 
@@ -295,7 +295,7 @@ class AirQualityIndexAPI(APIView):
             start_time=start_time,
             end_time=end_time,
         )
-        return single_line_message("You will now receive daily updates for {} 🎉🎉🎉".format(address))
+        return subscription_success_message(address)
 
     def handleSubscribeRequest(self, data):
         platform, platform_id, name = self.load_user_data_from_fb(data)

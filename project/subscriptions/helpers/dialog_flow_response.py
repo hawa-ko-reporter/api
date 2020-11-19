@@ -25,8 +25,7 @@ def get_aqi_message(aqi):
         aqi = int(aqi)
     except ValueError:
         image = "https://dummyimage.com/{}/ffffff/000000.png&text={}".format(size, "-")
-        return image,message
-
+        return image, message
 
     if aqi <= 50:
         image = "https://dummyimage.com/{}/00e400/000000.png&text={}".format(size, aqi)
@@ -169,7 +168,6 @@ def multiple_stations_slider_report_stations(stations):
         full_url = 'https://3955fe4a9643.ngrok.io/aqi/?id={}'.format(station['uid'])
         full_url = 'https://hawa.naxa.com.np/aqi/?id={}'.format(station['uid'])
 
-
         station_name = station.get('station').get('name')
         title = "{} (Approx. {:.1f} KM away)".format(station_name, station['distance'])
         aqi_code, health = get_aqi_code(aqi=station['aqi'])
@@ -201,10 +199,8 @@ def multiple_stations_slider_report_stations(stations):
 
     }
 
-    quick_replies = ['Send Daily']
-    queries = generate_random_queries(1)
-    print(queries)
-    quick_replies.append(queries)
+    quick_replies = ['Send Daily', 'Mask', "Air Pollution FAQs"]
+
     fulfillment_messages["fulfillmentMessages"] = [
         fb_text("I found these stations nearby "),
         fb_text("Swipe right ➡➡️️"),
@@ -213,7 +209,7 @@ def multiple_stations_slider_report_stations(stations):
         fb_text("You know! I can send these to you daily automatically"),
         fb_quick_replies("Choose the option 'send daily' to subscribe",
                          quick_replies)
-                         ]
+    ]
 
     return fulfillment_messages
 
@@ -223,9 +219,10 @@ def geocode_failure_reply():
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! I don't know that address!"))
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Say a different address"))
     fulfillment_messages['fulfillmentMessages'].append(
-        fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara","AQI at Dharan"]))
+        fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara", "AQI at Dharan"]))
 
     return fulfillment_messages
+
 
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
@@ -236,6 +233,14 @@ def confirm_geo_code_location(display_name):
         fb_quick_replies("Choose a option or reply:", ["Cancel", "Yes", "No"]))
     return fulfillment_messages
 
+
+def subscription_success_message(address):
+    fulfillment_messages = {"fulfillmentMessages": []}
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("You will now receive daily updates for {} 🎉🎉🎉".format(address)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?",["No", "Mask", "Air "
+                                                                                                          "Pollution "
+                                                                                                          "FAQs"]))
+    return fulfillment_messages
 
 def welcome_message(name, user):
     message_without_name = ["Great to see you again {}".format(name),
@@ -267,7 +272,7 @@ def welcome_message(name, user):
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("👋", ["Air quality near me",  "What is AQI?",generate_random_queries(1)]))
+            fb_quick_replies("👋", ["Air Quality near me", "Mask", "Air Pollution FAQs"]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
 
@@ -277,7 +282,7 @@ def welcome_message(name, user):
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["Air quality near me", "What is AQI?",generate_random_queries(1)]
+        previous_locations = ["Air Quality near me", "Mask", "Air Pollution FAQs"]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 
