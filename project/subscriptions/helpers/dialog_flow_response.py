@@ -272,7 +272,7 @@ def welcome_message(name, user):
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("👋", ["Air Quality near me", "Mask", "Air Pollution FAQs"]))
+            fb_quick_replies("👋", ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs"]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
 
@@ -282,7 +282,7 @@ def welcome_message(name, user):
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["Air Quality near me", "Mask", "Air Pollution FAQs"]
+        previous_locations = ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs"]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 
