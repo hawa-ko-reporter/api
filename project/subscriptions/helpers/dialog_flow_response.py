@@ -236,11 +236,13 @@ def confirm_geo_code_location(display_name):
 
 def subscription_success_message(address):
     fulfillment_messages = {"fulfillmentMessages": []}
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("You will now receive daily updates for {} 🎉🎉🎉".format(address)))
-    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?",["No", "Mask", "Air "
-                                                                                                          "Pollution "
-                                                                                                          "FAQs"]))
+    fulfillment_messages['fulfillmentMessages'].append(
+        fb_text("You will now receive daily updates for {} 🎉🎉🎉".format(address)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?", ["No", "Mask", "Air "
+                                                                                                           "Pollution "
+                                                                                                           "FAQs"]))
     return fulfillment_messages
+
 
 def welcome_message(name, user):
     message_without_name = ["Great to see you again {}".format(name),
@@ -272,7 +274,7 @@ def welcome_message(name, user):
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("👋", ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs"]))
+            fb_quick_replies("👋", ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs", "Enroll Device"]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
 
@@ -282,7 +284,7 @@ def welcome_message(name, user):
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs"]
+        previous_locations = ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs", "Enroll Device"]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 
