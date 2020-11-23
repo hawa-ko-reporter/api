@@ -252,19 +252,18 @@ def welcome_message(name, user):
                           "I am able to report air quality information of places in Nepal."
                           "I do this by searching real - time air pollution open data on the web.",
 
-                          "Namaste! {} I am Hawa ko Reporter the coolest chat bot here to "
+                          "Namaste! I am Hawa ko Reporter the coolest chat bot here to "
                           "let you know about things associated with air quality. "
                           "I am in your service to fulfill your queries. "
-                          "Please choose what would you like to know about".format(name),
+                          "Please choose what would you like to know about"
 
-                          "Hey {}! nice to connect with you. I am Hawa ko Reporter"
+                          "Hey ! nice to connect with you. I am Hawa ko Reporter"
                           " a chat-bot designed to clear people’s confusion primarily about "
                           "the air quality and factors associated with it. "
-                          "Please select what you are interested in knowing about".format(name),
+                          "Please select what you are interested in knowing about"
                           "Hello {}! Hope you are staying safe in this pandemic. "
                           "Btw I am Hawa ko Reporter a chat-bot. I have been assigned to "
-                          "help you to know about the air quality. What information would you like to et from me?".format(
-                              name)
+                          "help you to know about the air quality. What information would you like to et from me?"
                           ]
 
     messages = messages_with_name if name is None else message_without_name
