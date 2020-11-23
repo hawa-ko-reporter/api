@@ -248,11 +248,11 @@ class AirQualityIndexAPI(APIView):
             except:
                 pass
         except:
-            platform, platform_id, name = self.load_user_data_from_fb(data)
+            platform, platform_id, full_name = self.load_user_data_from_fb(data)
             user, created = User.objects.get_or_create(
                 platform=platform,
                 platform_id=platform_id,
-                full_name=name
+                full_name=full_name
             )
 
         return welcome_message(name, user)
