@@ -255,13 +255,14 @@ def welcome_message(name, user):
                           "Namaste! I am Hawa ko Reporter the coolest chat bot here to "
                           "let you know about things associated with air quality. "
                           "I am in your service to fulfill your queries. "
-                          "Please choose what would you like to know about"
+                          "Please choose what would you like to know about",
 
                           "Hey ! nice to connect with you. I am Hawa ko Reporter"
                           " a chat-bot designed to clear people’s confusion primarily about "
                           "the air quality and factors associated with it. "
-                          "Please select what you are interested in knowing about"
-                          "Hello {}! Hope you are staying safe in this pandemic. "
+                          "Please select what you are interested in knowing about",
+
+                          "Hello! Hope you are staying safe in this pandemic. "
                           "Btw I am Hawa ko Reporter a chat-bot. I have been assigned to "
                           "help you to know about the air quality. What information would you like to et from me?"
                           ]
