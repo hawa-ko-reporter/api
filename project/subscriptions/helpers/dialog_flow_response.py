@@ -237,8 +237,8 @@ def confirm_geo_code_location(display_name):
 def subscription_success_message(address):
     fulfillment_messages = {"fulfillmentMessages": []}
     fulfillment_messages['fulfillmentMessages'].append(
-        fb_text("You will now receive daily updates for {} 🎉🎉🎉".format(address)))
-    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?", ["Bye!", "Mask", "Air "
+        fb_text("You will now receive daily updates for {}".format(address)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?", ["Bye", "Mask", "Air "
                                                                                                            "Pollution "
                                                                                                            "FAQs"]))
     return fulfillment_messages
