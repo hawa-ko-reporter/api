@@ -102,10 +102,10 @@ class AirQualityIndexAPI(APIView):
         address = geocode_result.get("address")
         display_name = geocode_result.get('display_name')
 
-        if "kathmandu" in display_name.lower():
-            return display_name
-        if "lalitpur" in display_name.lower():
-            return display_name
+        # if "kathmandu" in display_name.lower():
+        #     return display_name
+        # if "lalitpur" in display_name.lower():
+        #     return display_name
 
         # find address
         locality = address.get('road')
