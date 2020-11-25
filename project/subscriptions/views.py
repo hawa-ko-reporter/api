@@ -96,7 +96,7 @@ class AirQualityIndexAPI(APIView):
             error = 'Reverse geo-coding failed'
             return 0, 0, '', error
 
-    def get_display_name(geocode_result):
+    def get_display_name(self,geocode_result):
 
         names = []
         address = geocode_result.get("address")
