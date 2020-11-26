@@ -216,18 +216,22 @@ def multiple_stations_slider_report_stations(stations):
 
 def geocode_failure_reply():
     fulfillment_messages = {"fulfillmentMessages": []}
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! I don't know that address!"))
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Say a different address"))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! I don't know that place!"))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Say a different place"))
     fulfillment_messages['fulfillmentMessages'].append(
         fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara", "AQI at Dharan"]))
 
     return fulfillment_messages
 
 
+def get_random_apperciation():
+    message = ['That beautiful city','That happening city','That amazing city']
+    return random.choice(message)
+
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
 
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*?".format(display_name)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*? {}".format(display_name,get_random_apperciation())))
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the correct?"))
     fulfillment_messages['fulfillmentMessages'].append(
         fb_quick_replies("Choose a option or reply:", ["Cancel", "Yes", "No"]))
