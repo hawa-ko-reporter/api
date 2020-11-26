@@ -227,8 +227,8 @@ def geocode_failure_reply():
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
 
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! is it nearby*{}*?".format(display_name)))
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the right address?"))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*?".format(display_name)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the correct?"))
     fulfillment_messages['fulfillmentMessages'].append(
         fb_quick_replies("Choose a option or reply:", ["Cancel", "Yes", "No"]))
     return fulfillment_messages

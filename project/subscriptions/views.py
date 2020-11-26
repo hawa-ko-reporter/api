@@ -108,19 +108,19 @@ class AirQualityIndexAPI(APIView):
         #     return display_name
 
         # find address
-        locality = address.get('road')
-
-        if locality is None:
-            locality = address.get('neighbourhood')
-
-        if locality is None:
-            locality = address.get('suburb')
-
-        if locality is None:
-            locality = address.get('locality')
-
-        if locality is not None:
-            names.append(locality)
+        # locality = address.get('road')
+        #
+        # if locality is None:
+        #     locality = address.get('neighbourhood')
+        #
+        # if locality is None:
+        #     locality = address.get('suburb')
+        #
+        # if locality is None:
+        #     locality = address.get('locality')
+        #
+        # if locality is not None:
+        #     names.append(locality)
 
             # find city
         city = address.get('town')
