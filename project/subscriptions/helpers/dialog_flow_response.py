@@ -161,7 +161,6 @@ def multiple_stations_slider_report_stations(stations):
                                  "standard:"))
 
     for station in stations:
-        if stations['distance'] < 10:
 
         image_url, message = get_aqi_message(station['aqi'])
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
