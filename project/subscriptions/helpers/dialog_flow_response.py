@@ -161,6 +161,7 @@ def multiple_stations_slider_report_stations(stations):
                                  "standard:"))
 
     for station in stations:
+        if stations['distance'] < 10:
 
         image_url, message = get_aqi_message(station['aqi'])
         maps_url = "https://www.google.com/maps/search/?api=1&query={},{}".format(station['lat'], station['lon'])
@@ -231,7 +232,8 @@ def get_random_apperciation():
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
 
-    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*? {}".format(display_name,get_random_apperciation())))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! *{}*? {}".format(display_name,
+                                                                                     get_random_apperciation())))
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Is that the correct?"))
     fulfillment_messages['fulfillmentMessages'].append(
         fb_quick_replies("Choose a option or reply:", ["Cancel", "Yes", "No"]))

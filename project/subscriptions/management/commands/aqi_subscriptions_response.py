@@ -101,17 +101,17 @@ class Command(BaseCommand):
                     'platform': "FACEBOOK"
                 }
 
-                fb_msg.send_text_message(platform_id, "Your daily report for *{}* has arrived".format(
-                    user_sub.subscription_location_name))
+                # fb_msg.send_text_message(platform_id, "Your daily report for *{}* has arrived".format(
+                #     user_sub.subscription_location_name))
 
-                response, status_code = fb_msg.send_card_message(platform_id, fb_custom_payload['payload']['facebook']['attachment'])
-                SubscriptionDelivery.objects.create(
-                    delivery_user=user_sub.subscription_user,
-                    delivery_status=status_code,
-                    delivery_location_name=stations[0]['station']['name'],
-                    delivery_aqi=stations[0]['aqi'],
-                    delivery_status_message=response
-                )
+                # response, status_code = fb_msg.send_card_message(platform_id, fb_custom_payload['payload']['facebook']['attachment'])
+                # SubscriptionDelivery.objects.create(
+                #     delivery_user=user_sub.subscription_user,
+                #     delivery_status=status_code,
+                #     delivery_location_name=stations[0]['station']['name'],
+                #     delivery_aqi=stations[0]['aqi'],
+                #     delivery_status_message=response
+                # )
 
                 self.stdout.write("Report sent to {} with status code {} ".format(user_sub.subscription_user,status_code,response))
 
