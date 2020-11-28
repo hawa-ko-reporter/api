@@ -228,7 +228,7 @@ def multiple_stations_slider_report_stations(stations,view_all_stations=False):
             fb_custom_payload,
             fb_text(recommendation),
             fb_text("Choose the option 'send daily' to subscribe"),
-            fb_quick_replies("wipe right ➡➡️️",
+            fb_quick_replies("swipe right ➡➡️️",
                              quick_replies)
         ]
     return fulfillment_messages
