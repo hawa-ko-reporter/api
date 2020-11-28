@@ -224,12 +224,11 @@ def multiple_stations_slider_report_stations(stations,view_all_stations=False):
         ]
     else:
         fulfillment_messages["fulfillmentMessages"] = [
-            fb_text("I found these stations nearby "),
-            fb_text("Swipe right ➡➡️️"),
+            fb_text("I found these stations within 6 KM Radius "),
             fb_custom_payload,
             fb_text(recommendation),
-            fb_text("You know! I can send these to you daily automatically"),
-            fb_quick_replies("Choose the option 'send daily' to subscribe",
+            fb_text("Choose the option 'send daily' to subscribe"),
+            fb_quick_replies("wipe right ➡➡️️",
                              quick_replies)
         ]
     return fulfillment_messages
