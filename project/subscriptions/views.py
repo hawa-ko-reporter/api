@@ -204,7 +204,7 @@ class AirQualityIndexAPI(APIView):
         aqi_fetcher = AirQualityFetcher(aqi_token=aqi_token)
         lat = 27.7172
         lon = 85.3240
-        aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=10,view_all=True)
+        aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=8,view_all=True)
 
         if len(aqi_results) >= 1:
             self.was_request_success = True
