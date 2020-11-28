@@ -173,11 +173,16 @@ def multiple_stations_slider_report_stations(stations,view_all_stations=False):
             title = "{} ".format(station_name)
         else:
             title = "{} (Approx. {:.1f} KM away)".format(station_name, station['distance'])
+
         aqi_code, health = get_aqi_code(aqi=station['aqi'])
+
         if aqi_code != -1:
             message = "This is considered {} ".format(health)
         else:
             message = health
+
+        if aqi_code == -1 and view_all_stations:
+            continue
 
         elements.append(
             fb_template_card(title=title,
