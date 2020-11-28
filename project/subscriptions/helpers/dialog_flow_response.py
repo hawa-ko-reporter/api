@@ -136,7 +136,7 @@ def generate_random_queries(sample_size):
     return random.choice(queries)
 
 
-def multiple_stations_slider_report_stations(stations):
+def multiple_stations_slider_report_stations(stations,view_all_stations=False):
     fulfillment_messages = {}
     elements = []
     recommendation = None
@@ -169,12 +169,16 @@ def multiple_stations_slider_report_stations(stations):
         full_url = 'https://hawa.naxa.com.np/aqi/?id={}'.format(station['uid'])
 
         station_name = station.get('station').get('name')
-        title = "{} (Approx. {:.1f} KM away)".format(station_name, station['distance'])
+        if view_all_stations:
+            title = "{} ".format(station_name)
+        else:
+            title = "{} (Approx. {:.1f} KM away)".format(station_name, station['distance'])
         aqi_code, health = get_aqi_code(aqi=station['aqi'])
         if aqi_code != -1:
             message = "This is considered {} ".format(health)
         else:
             message = health
+
         elements.append(
             fb_template_card(title=title,
                              image_url=image_url,
@@ -186,6 +190,9 @@ def multiple_stations_slider_report_stations(stations):
 
             if recommendation is not None:
                 recommendation = "I would say {}".format(recommendation.recommendation_text)
+            else:
+                recommendation = ""
+
 
     fb_custom_payload = {
 
@@ -201,16 +208,34 @@ def multiple_stations_slider_report_stations(stations):
 
     quick_replies = ['Send Daily', 'Mask', "Air Pollution FAQs"]
 
-    fulfillment_messages["fulfillmentMessages"] = [
-        fb_text("I found these stations nearby "),
-        fb_text("Swipe right ➡➡️️"),
-        fb_custom_payload,
-        fb_text(recommendation),
-        fb_text("You know! I can send these to you daily automatically"),
-        fb_quick_replies("Choose the option 'send daily' to subscribe",
-                         quick_replies)
-    ]
+    if view_all_stations:
+        fulfillment_messages["fulfillmentMessages"] = [
+            fb_text("I am connected to these stations"),
+            fb_custom_payload,
+            fb_quick_replies("Swipe right ➡➡️️",
+                             quick_replies)
+        ]
+    else:
+        fulfillment_messages["fulfillmentMessages"] = [
+            fb_text("I found these stations nearby "),
+            fb_text("Swipe right ➡➡️️"),
+            fb_custom_payload,
+            fb_text(recommendation),
+            fb_text("You know! I can send these to you daily automatically"),
+            fb_quick_replies("Choose the option 'send daily' to subscribe",
+                             quick_replies)
+        ]
+    return fulfillment_messages
 
+
+def no_stations_reply(address,data):
+    fulfillment_messages = {"fulfillmentMessages": []}
+    fulfillment_messages['fulfillmentMessages'].append(
+        fb_text("No nearby stations found within 6 KM Radius of {}".format(address)))
+    fulfillment_messages['fulfillmentMessages'].append(fb_text("You can either tell me another place"))
+    fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("or view all stations", ['Cancel', "View all "
+                                                                                                           "Stations"]))
+    add_output_context(fulfillment_messages,data,0)
     return fulfillment_messages
 
 
@@ -219,14 +244,15 @@ def geocode_failure_reply():
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Oh! I don't know that place!"))
     fulfillment_messages['fulfillmentMessages'].append(fb_text("Say a different place"))
     fulfillment_messages['fulfillmentMessages'].append(
-        fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara", "AQI at Dharan"]))
+        fb_quick_replies("or choose a option", ["Cancel", "AQI at Kathmandu", "AQI at Pokhara", "AQI at Dhankuta"]))
 
     return fulfillment_messages
 
 
 def get_random_apperciation():
-    message = ['That beautiful city','That happening city','That amazing city']
+    message = ['That beautiful place', 'That happening place', 'That amazing place']
     return random.choice(message)
+
 
 def confirm_geo_code_location(display_name):
     fulfillment_messages = {"fulfillmentMessages": []}
@@ -244,8 +270,8 @@ def subscription_success_message(address):
     fulfillment_messages['fulfillmentMessages'].append(
         fb_text("You will now receive daily updates for {}".format(address)))
     fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("Wanna know more?", ["Bye", "Mask", "Air "
-                                                                                                           "Pollution "
-                                                                                                           "FAQs"]))
+                                                                                                            "Pollution "
+                                                                                                            "FAQs","View all Stations"]))
     return fulfillment_messages
 
 
@@ -279,7 +305,7 @@ def welcome_message(name, user):
     if name is None:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("Try it now! Choose a option below"))
         fulfillment_messages['fulfillmentMessages'].append(
-            fb_quick_replies("👋", ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs", "Enroll Device"]))
+            fb_quick_replies("👋", ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs","View all Stations", "Enroll Device"]))
     else:
         fulfillment_messages['fulfillmentMessages'].append(fb_text("What would you like to ask today?"))
 
@@ -289,7 +315,7 @@ def welcome_message(name, user):
         ).order_by('-created')[0:2]
         print(logs)
 
-        previous_locations = ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs", "Enroll Device"]
+        previous_locations = ["Air Quality near me", "Mask FAQs", "Air Pollution FAQs","View all Stations", "Enroll Device"]
         for log in logs:
             previous_locations.append("aqi at %s" % log.location_name)
 

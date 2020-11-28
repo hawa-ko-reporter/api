@@ -19,7 +19,8 @@ from .helpers.air_quality_fetcher import getNearestAQI, get_aqi_code, get_aqi, A
 from .helpers.dialog_flow_parser import get_value_from_dialogflow_context, DIALOGFLOW_ADDRESS, DIALOGFLOW_TIME_PERIOD, \
     DIALOGFLOW_TIME_PERIOD_START, DIALOGFLOW_TIME_PERIOD_END
 from .helpers.dialog_flow_response import get_aqi_response_message, single_line_message, get_list_subs_response_message, \
-    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message, confirm_geo_code_location,geocode_failure_reply,subscription_success_message
+    multiple_stations_report, multiple_stations_slider_report_stations, welcome_message, confirm_geo_code_location, \
+    geocode_failure_reply, subscription_success_message, no_stations_reply
 from .helpers.facebook_api import get_name, handle_fb_name_response
 from .models import User, UserSubscription, Subscription, AQIRequestLog, Recommendation
 
@@ -198,6 +199,17 @@ class AirQualityIndexAPI(APIView):
         else:
             return confirm_geo_code_location(display_name=display_name)
 
+    def view_all_stations(self,data):
+        aqi_token = os.environ.get('AQI_TOKEN', '').strip()
+        aqi_fetcher = AirQualityFetcher(aqi_token=aqi_token)
+        lat = 27.7172
+        lon = 85.3240
+        aqi_results = aqi_fetcher.get_by_distance(lat, lon, results=10,view_all=True)
+
+        if len(aqi_results) >= 1:
+            self.was_request_success = True
+            return multiple_stations_slider_report_stations(aqi_results,view_all_stations=True)
+
     def handle_aqi_request_v2(self, data):
         self.was_request_success = False
         address = get_address_from_dialogflow(data)
@@ -215,15 +227,16 @@ class AirQualityIndexAPI(APIView):
                 return multiple_stations_slider_report_stations(aqi_results)
 
         if not self.was_request_success:
-            fullfillment_text = single_line_message(
-                message="No nearby stations found! 😶 at {}. Try another address ".format(address))
-            fullfillment_text["outputContexts"] = [{
-                "name": "{}/contexts/data-upsell-yes".format(data['session']),
-                "lifespanCount": 1,
-                "parameters": {
-                    "aqi": "no",
-                }
-            }]
+            return no_stations_reply(address,data)
+            # fullfillment_text = single_line_message(
+            #     message="No nearby stations found within 6 KM Radius of {}. Try another place".format(address))
+            # fullfillment_text["outputContexts"] = [{
+            #     "name": "{}/contexts/data-upsell-yes".format(data['session']),
+            #     "lifespanCount": 1,
+            #     "parameters": {
+            #         "aqi": "no",
+            #     }
+            # }]
         return fullfillment_text
 
     def handleMaskQuery(self, data):
@@ -364,7 +377,9 @@ class AirQualityIndexAPI(APIView):
             data = request.data
             intent = data['queryResult']['intent']['displayName']
             print(intent)
-            if intent == "request.aqi":
+            if intent == "view.all.stations":
+                message = self.view_all_stations(data)
+            elif intent == "request.aqi":
                 message = self.confirm_geo_code_location(data)
             elif intent == "request.aqi - address - confirmed" or intent == "aqi.location":
                 message = self.handle_aqi_request_v2(data)
