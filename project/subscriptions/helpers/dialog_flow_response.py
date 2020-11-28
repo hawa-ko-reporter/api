@@ -209,6 +209,7 @@ def multiple_stations_slider_report_stations(stations,view_all_stations=False):
     quick_replies = ['Send Daily', 'Mask', "Air Pollution FAQs"]
 
     if view_all_stations:
+        quick_replies.remove("Send Daily")
         fulfillment_messages["fulfillmentMessages"] = [
             fb_text("I am connected to these stations"),
             fb_custom_payload,
