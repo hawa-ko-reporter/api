@@ -210,6 +210,7 @@ def multiple_stations_slider_report_stations(stations,view_all_stations=False):
 
     if view_all_stations:
         quick_replies.remove("Send Daily")
+        quick_replies.append("Air Quality Nearby")
         fulfillment_messages["fulfillmentMessages"] = [
             fb_text("I am connected to these stations"),
             fb_custom_payload,
