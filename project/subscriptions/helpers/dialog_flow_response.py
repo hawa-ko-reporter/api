@@ -241,7 +241,7 @@ def no_stations_reply(address,data):
     fulfillment_messages['fulfillmentMessages'].append(fb_text("You can either tell me another place"))
     fulfillment_messages['fulfillmentMessages'].append(fb_quick_replies("or view all stations", ['Cancel', "View all "
                                                                                                            "Stations"]))
-    add_output_context(fulfillment_messages,data,0)
+    add_output_context(fulfillment_messages,data,{'aqi':"0"})
     return fulfillment_messages
 
 
