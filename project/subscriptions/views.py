@@ -103,39 +103,18 @@ class AirQualityIndexAPI(APIView):
         address = geocode_result.get("address")
         display_name = geocode_result.get('display_name')
 
-        # if "kathmandu" in display_name.lower():
-        #     return display_name
-        # if "lalitpur" in display_name.lower():
-        #     return display_name
-
-        # find address
-        # locality = address.get('road')
-        #
-        # if locality is None:
-        #     locality = address.get('neighbourhood')
-        #
-        # if locality is None:
-        #     locality = address.get('suburb')
-        #
-        # if locality is None:
-        #     locality = address.get('locality')
-        #
-        # if locality is not None:
-        #     names.append(locality)
-
-            # find city
+        # find city
         city = address.get('town')
-
-        if city is None:
-            city = address.get('city')
 
         if city is None:
             city = address.get('county')
 
+        if city is None:
+            city = address.get('city')
+
         if city is not None:
             names.append(city)
 
-        print(names)
         if len(names) > 0:
 
             return ",".join(names)
